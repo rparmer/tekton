@@ -42,7 +42,22 @@ metadata:
   name: github-listener
 spec:
   triggers:
-    - name: github-listener
+    - name: push-events
+      interceptors:
+        - ref:
+            name: "github"
+          params:
+            - name: "secretRef"
+              value:
+                secretName: github-secret
+                secretKey: secretToken
+            - name: "eventTypes"
+              value: ["push"]
+      bindings:
+        - ref: github-push-binding
+      template:
+        ref: github-template
+    - name: pull-request-events
       interceptors:
         - ref:
             name: "github"
@@ -84,8 +99,23 @@ metadata:
   name: github-pr-binding
 spec:
   params:
+    - name: gitevent
+      value: $(header.X-GitHub-Event)
     - name: gitrevision
-      value: $(body.pull_request.head.sha)
+      value: $(body.pull_request.head.sha) # body.pull_request.head.sha
+    - name: gitrepositoryurl
+      value: $(body.repository.clone_url)
+---
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerBinding
+metadata:
+  name: github-push-binding
+spec:
+  params:
+    - name: gitevent
+      value: $(header.X-GitHub-Event)
+    - name: gitrevision
+      value: $(body.after) # body.pull_request.head.sha
     - name: gitrepositoryurl
       value: $(body.repository.clone_url)
 ---
@@ -95,6 +125,7 @@ metadata:
   name: github-template
 spec:
   params:
+    - name: gitevent
     - name: gitrevision
     - name: gitrepositoryurl
   resourcetemplates:
@@ -108,7 +139,7 @@ spec:
             - image: ubuntu
               script: |
                 #! /bin/bash
-                echo "Revision is : $(tt.params.gitrevision). RepoURL is $(tt.params.gitrepositoryurl)"
+                echo "Event is: $(tt.params.gitevent) Revision is: $(tt.params.gitrevision). RepoURL is: $(tt.params.gitrepositoryurl)"
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
