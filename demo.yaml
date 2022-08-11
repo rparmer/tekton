@@ -58,9 +58,7 @@ spec:
             name: "cel"
           params:
             - name: "filter"
-              value: "body.deleted != 'false'"
-            - name: "filter"
-              value: "body.head_commit != 'null'"
+              value: "body.deleted != false"
       bindings:
         - ref: github-push-binding
       template:
