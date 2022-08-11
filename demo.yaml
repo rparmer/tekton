@@ -139,7 +139,7 @@ spec:
             - image: ubuntu
               script: |
                 #! /bin/bash
-                echo "Event is: $(tt.params.gitevent) Revision is: $(tt.params.gitrevision). RepoURL is: $(tt.params.gitrepositoryurl)"
+                echo "Event is: $(tt.params.gitevent). Revision is: $(tt.params.gitrevision). RepoURL is: $(tt.params.gitrepositoryurl)"
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
