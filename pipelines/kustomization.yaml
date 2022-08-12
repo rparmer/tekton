@@ -1,25 +1,8 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: dev
-nameSuffix: 
-resources: [*]
-# - listener
-- sample-task.yaml
-- pipeline.yaml
-patches:
-- patch: |
-    apiVersion: tekton.dev/v1beta1
-    kind: Pipeline
-    metadata:
-      name: all
-    spec:
-      template:
-        spec:
-          containers:
-            - name: manager
-              resources:
-                limits:
-                  cpu: 250m
-                  memory: 256Mi
-  target:
-    kind: Deployment
+namespace: default
+resources:
+- listener.yaml
+- triggers.yaml
+- tasks.yaml
+- pipelines.yaml

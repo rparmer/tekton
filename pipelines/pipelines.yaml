@@ -1,0 +1,83 @@
+---
+# The getting-started Pipeline will run through several tasks:
+# - source is pulled from git
+# - source is built into an image by img
+# - image output is pushed to ECR
+# - cloudevent emitted
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: getting-started-pipeline
+  namespace: default
+spec:
+  params:
+    - name: git-url
+    - name: git-revision
+    - name: image-name
+      default: ghcr.io/rparmer/tekton
+    - name: image-tag
+      default: latest
+    - name: path-to-image-context
+      default: ./
+    - name: path-to-dockerfile
+      default: ./Dockerfile
+  workspaces:
+    - name: shared-data
+    - name: docker-credentials
+  tasks:
+    - name: git-clone
+      taskRef:
+        name: git-clone
+      params:
+        - name: url
+          value: $(params.git-url)
+        - name: revision
+          value: $(params.git-revision)
+      workspaces:
+        - name: output
+          workspace: shared-data
+    - name: build-image
+      taskRef:
+        name: kaniko
+      params:
+        - name: IMAGE
+          value: $(params.image-name):$(params.image-tag)
+        - name: CONTEXT
+          value: $(params.path-to-image-context)
+        - name: DOCKERFILE
+          value: $(params.path-to-dockerfile)
+      runAfter:
+        - git-clone
+      workspaces:
+        - name: source
+          workspace: shared-data
+        - name: dockerconfig
+          workspace: docker-credentials
+    # - name: build-docker-image
+    #   taskRef:
+    #     name: build-docker-image
+    #   params:
+    #     - name: pathToContext
+    #       value: /workspace/source-repo
+    #   workspaces:
+    #     - name: source
+    #       workspace: getting-started-pipeline-ws
+      # resources:
+      #   inputs:
+      #     - name: source-repo
+      #       resource: source-repo
+        # outputs:
+        #   - name: builtImage
+        #     resource: image-source
+    # - name: deploy-locally
+    #   taskRef:
+    #     name: deploy-locally
+    #   resources:
+    #     inputs:
+    #       - name: image-source
+    #         resource: image-source
+    #         from:
+    #           - build-docker-image
+    #     outputs:
+    #       - name: event-to-sink
+    #         resource: event-to-sink

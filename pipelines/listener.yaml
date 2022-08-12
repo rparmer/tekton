@@ -2,13 +2,11 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: tekton-triggers-example-sa
-  namespace: dev
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: triggers-example-eventlistener-binding
-  namespace: dev
 subjects:
 - kind: ServiceAccount
   name: tekton-triggers-example-sa
@@ -24,16 +22,73 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: tekton-triggers-example-sa
-  namespace: dev
+  namespace: default
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
   name: tekton-triggers-eventlistener-clusterroles
 ---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: github-secret
+type: Opaque
+stringData:
+  secretToken: "1234567"
+---
 apiVersion: triggers.tekton.dev/v1beta1
 kind: EventListener
 metadata:
-  name: listener
-  namespace: dev
+  name: github-listener
 spec:
-  serviceAccountName: tekton-triggers-example-sa
+  triggers:
+    - name: push-events
+      interceptors:
+        - ref:
+            name: "github"
+          params:
+            - name: "secretRef"
+              value:
+                secretName: github-secret
+                secretKey: secretToken
+            - name: "eventTypes"
+              value: ["push"]
+      bindings:
+        - ref: getting-started-pipelinebinding
+      template:
+        ref: getting-started-triggertemplate
+    - name: pull-request-events
+      interceptors:
+        - ref:
+            name: "github"
+          params:
+            - name: "secretRef"
+              value:
+                secretName: github-secret
+                secretKey: secretToken
+            - name: "eventTypes"
+              value: ["pull_request"]
+        - name: "only when PRs are opened"
+          ref:
+            name: "cel"
+          params:
+            - name: "filter"
+              value: "body.action in ['opened', 'synchronize', 'reopened']"
+      bindings:
+        - ref: github-pr-binding
+      template:
+        ref: github-template
+  resources:
+    kubernetesResource:
+      spec:
+        template:
+          spec:
+            serviceAccountName: tekton-triggers-example-sa
+            containers:
+              - resources:
+                  requests:
+                    memory: "64Mi"
+                    cpu: "250m"
+                  limits:
+                    memory: "128Mi"
+                    cpu: "500m"
