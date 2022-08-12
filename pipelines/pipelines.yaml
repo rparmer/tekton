@@ -1,20 +1,14 @@
 ---
-# The getting-started Pipeline will run through several tasks:
-# - source is pulled from git
-# - source is built into an image by img
-# - image output is pushed to ECR
-# - cloudevent emitted
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: getting-started-pipeline
+  name: sample-pipeline
   namespace: default
 spec:
   params:
     - name: git-url
     - name: git-revision
     - name: image-name
-      default: ghcr.io/rparmer/tekton
     - name: image-tag
       default: latest
     - name: path-to-image-context
@@ -53,31 +47,3 @@ spec:
           workspace: shared-data
         - name: dockerconfig
           workspace: docker-credentials
-    # - name: build-docker-image
-    #   taskRef:
-    #     name: build-docker-image
-    #   params:
-    #     - name: pathToContext
-    #       value: /workspace/source-repo
-    #   workspaces:
-    #     - name: source
-    #       workspace: getting-started-pipeline-ws
-      # resources:
-      #   inputs:
-      #     - name: source-repo
-      #       resource: source-repo
-        # outputs:
-        #   - name: builtImage
-        #     resource: image-source
-    # - name: deploy-locally
-    #   taskRef:
-    #     name: deploy-locally
-    #   resources:
-    #     inputs:
-    #       - name: image-source
-    #         resource: image-source
-    #         from:
-    #           - build-docker-image
-    #     outputs:
-    #       - name: event-to-sink
-    #         resource: event-to-sink

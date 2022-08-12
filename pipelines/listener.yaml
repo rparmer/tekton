@@ -54,30 +54,30 @@ spec:
             - name: "eventTypes"
               value: ["push"]
       bindings:
-        - ref: getting-started-pipelinebinding
+        - ref: github-push-binding
       template:
-        ref: getting-started-triggertemplate
-    - name: pull-request-events
-      interceptors:
-        - ref:
-            name: "github"
-          params:
-            - name: "secretRef"
-              value:
-                secretName: github-secret
-                secretKey: secretToken
-            - name: "eventTypes"
-              value: ["pull_request"]
-        - name: "only when PRs are opened"
-          ref:
-            name: "cel"
-          params:
-            - name: "filter"
-              value: "body.action in ['opened', 'synchronize', 'reopened']"
-      bindings:
-        - ref: github-pr-binding
-      template:
-        ref: github-template
+        ref: sample-pipeline-trigger-template
+    # - name: pull-request-events
+    #   interceptors:
+    #     - ref:
+    #         name: "github"
+    #       params:
+    #         - name: "secretRef"
+    #           value:
+    #             secretName: github-secret
+    #             secretKey: secretToken
+    #         - name: "eventTypes"
+    #           value: ["pull_request"]
+    #     - name: "only when PRs are opened"
+    #       ref:
+    #         name: "cel"
+    #       params:
+    #         - name: "filter"
+    #           value: "body.action in ['opened', 'synchronize', 'reopened']"
+    #   bindings:
+    #     - ref: github-pr-binding
+    #   template:
+    #     ref: github-template
   resources:
     kubernetesResource:
       spec:
