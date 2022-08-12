@@ -33,7 +33,15 @@ spec:
           - name: image-tag
             value: $(tt.params.image-tag)
         workspaces:
-          - name: shared-data
+          - name: source-data
+            volumeClaimTemplate:
+              spec:
+                accessModes:
+                  - ReadWriteOnce
+                resources:
+                  requests:
+                    storage: 1Gi
+          - name: destination-data
             volumeClaimTemplate:
               spec:
                 accessModes:

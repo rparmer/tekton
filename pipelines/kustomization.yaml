@@ -4,5 +4,5 @@ namespace: default
 resources:
 - listener.yaml
 - triggers.yaml
-# - tasks.yaml
+- tasks.yaml
 - pipelines.yaml

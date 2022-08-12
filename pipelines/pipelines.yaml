@@ -16,10 +16,11 @@ spec:
     - name: path-to-dockerfile
       default: ./Dockerfile
   workspaces:
-    - name: shared-data
+    - name: source-data
+    - name: destination-data
     - name: docker-credentials
   tasks:
-    - name: git-clone
+    - name: clone-source
       taskRef:
         name: git-clone
       params:
@@ -29,21 +30,48 @@ spec:
           value: $(params.git-revision)
       workspaces:
         - name: output
-          workspace: shared-data
-    - name: build-image
+          workspace: source-data
+    # - name: build-image
+    #   taskRef:
+    #     name: kaniko
+    #   params:
+    #     - name: IMAGE
+    #       value: $(params.image-name):$(params.image-tag)
+    #     - name: CONTEXT
+    #       value: $(params.path-to-image-context)
+    #     - name: DOCKERFILE
+    #       value: $(params.path-to-dockerfile)
+    #   runAfter:
+    #     - clone-source
+    #   workspaces:
+    #     - name: source
+    #       workspace: source-data
+    #     - name: dockerconfig
+    #       workspace: docker-credentials
+    - name: clone-destination
       taskRef:
-        name: kaniko
+        name: git-clone
       params:
-        - name: IMAGE
-          value: $(params.image-name):$(params.image-tag)
-        - name: CONTEXT
-          value: $(params.path-to-image-context)
-        - name: DOCKERFILE
-          value: $(params.path-to-dockerfile)
+        - name: url
+          value: $(params.git-url)
+        - name: revision
+          value: $(params.git-revision)
+      workspaces:
+        - name: output
+          workspace: destination-data
+    - name: copy-files-to-destination
+      taskRef:
+        name: move-files-and-open-pr
       runAfter:
-        - git-clone
+        - clone-source
+        - clone-destination
+      params:
+        - name: source-files
+          value: demo.yaml
+        - name: destination-dir
+          value: sample-destination
       workspaces:
         - name: source
-          workspace: shared-data
-        - name: dockerconfig
-          workspace: docker-credentials
+          workspace: destination-data
+        - name: destination
+          workspace: destination-data
