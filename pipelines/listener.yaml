@@ -57,27 +57,27 @@ spec:
         - ref: github-push-binding
       template:
         ref: sample-pipeline-trigger-template
-    # - name: pull-request-events
-    #   interceptors:
-    #     - ref:
-    #         name: "github"
-    #       params:
-    #         - name: "secretRef"
-    #           value:
-    #             secretName: github-secret
-    #             secretKey: secretToken
-    #         - name: "eventTypes"
-    #           value: ["pull_request"]
-    #     - name: "only when PRs are opened"
-    #       ref:
-    #         name: "cel"
-    #       params:
-    #         - name: "filter"
-    #           value: "body.action in ['opened', 'synchronize', 'reopened']"
-    #   bindings:
-    #     - ref: github-pr-binding
-    #   template:
-    #     ref: github-template
+    - name: pull-request-events
+      interceptors:
+        - ref:
+            name: github
+          params:
+            - name: secretRef
+              value:
+                secretName: github-secret
+                secretKey: secretToken
+            - name: eventTypes
+              value: ["pull_request"]
+        - name: "only when PRs are opened"
+          ref:
+            name: cel
+          params:
+            - name: filter
+              value: "body.action in ['opened', 'synchronize', 'reopened']"
+      bindings:
+        - ref: github-pr-binding
+      template:
+        ref: sample-pipeline-trigger-template
   resources:
     kubernetesResource:
       spec:
@@ -92,3 +92,26 @@ spec:
                   limits:
                     memory: 128Mi
                     cpu: 500m
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: github-listener
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+spec:
+  tls:
+  - hosts:
+    - github-listener.russparmer.dev
+    secretName: github-listener-tls
+  rules:
+  - host: github-listener.russparmer.dev
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: el-github-listener
+            port:
+              name: http-listener
