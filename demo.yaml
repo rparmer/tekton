@@ -53,12 +53,6 @@ spec:
                 secretKey: secretToken
             - name: "eventTypes"
               value: ["push"]
-        - name: "ignore delete events"
-          ref:
-            name: "cel"
-          params:
-            - name: "filter"
-              value: "body.deleted != false"
       bindings:
         - ref: github-push-binding
       template:
