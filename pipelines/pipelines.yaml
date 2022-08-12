@@ -19,6 +19,7 @@ spec:
     - name: source-data
     - name: destination-data
     - name: docker-credentials
+    - name: git-credentials
   tasks:
     - name: clone-source
       taskRef:
@@ -31,6 +32,8 @@ spec:
       workspaces:
         - name: output
           workspace: source-data
+        - name: basic-auth
+          workspace: git-credentials
     # - name: build-image
     #   taskRef:
     #     name: kaniko
@@ -59,6 +62,8 @@ spec:
       workspaces:
         - name: output
           workspace: destination-data
+        - name: basic-auth
+          workspace: git-credentials
     - name: copy-files-to-destination
       taskRef:
         name: move-files-and-open-pr
@@ -70,6 +75,8 @@ spec:
           value: demo.yaml
         - name: destination-dir
           value: sample-destination
+        - name: destination-branch
+          value: tekton-pipelines
       workspaces:
         - name: source
           workspace: destination-data

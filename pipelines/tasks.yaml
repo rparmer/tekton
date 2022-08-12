@@ -40,20 +40,42 @@ spec:
     - name: source
     - name: destination
   params:
-  - name: source-files
-  - name: destination-dir
-    type: string
-    default: ""
+    - name: source-files
+    - name: destination-dir
+      type: string
+      default: ""
+    - name: destination-branch
+      default: main
+    - name: commit-message
+      default: "commit from tekton pipeline"
+    - name: GIT_USER_EMAIL
+      default: <>
+    - name: GIT_USER_NAME
+      default: tekton-automation
   steps:
     - name: copy-files-to-destination
       image: alpine
+      workingDir: $(workspaces.source.path)
       script: |
-        #! /bin/sh
+        #!/usr/bin/env sh
         destination="$(workspaces.destination.path)/$(params.destination-dir)"
         mkdir -p "$destination"
-        cd "$(workspaces.source.path)"
         cp -r $(params.source-files) "$destination"
         ls -al "$destination"
+    - name: commit-to-destination
+      image: alpine/git
+      workingDir: $(workspaces.destination.path)
+      script: |
+        #!/usr/bin/env sh
+        git config --global user.email "$(params.GIT_USER_EMAIL)"
+        git config --global user.name "$(params.GIT_USER_NAME)"
+
+        git checkout -b $(params.destination-branch)
+        git add .
+
+        git commit -m "$(params.commit-message)"
+
+        git push -u origin $(params.destination-branch)
     # - name: create-pr
     #   image: gcr.io/kaniko-project/executor:v1.9.0
     #   command:
