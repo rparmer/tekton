@@ -6,10 +6,10 @@ metadata:
 spec:
   params:
     - name: git-revision
-      description: The git revision
-      default: main
     - name: git-url
-      description: The git repository url
+    - name: git-full-name
+    - name: git-master-branch
+      default: main
     - name: image-name
       default: ghcr.io/rparmer/tekton
     - name: image-tag
@@ -28,6 +28,10 @@ spec:
             value: $(tt.params.git-url)
           - name: git-revision
             value: $(tt.params.git-revision)
+          - name: git-full-name
+            value: $(tt.params.git-full-name)
+          - name: git-master-branch
+            value: $(tt.params.git-master-branch)
           - name: image-name
             value: $(tt.params.image-name)
           - name: image-tag
