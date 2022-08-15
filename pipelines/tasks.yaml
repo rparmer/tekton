@@ -1,40 +1,9 @@
-# ---
-# apiVersion: tekton.dev/v1beta1
-# kind: Task
-# metadata:
-#   name: build-docker-image
-#   namespace: getting-started
-# spec:
-#   params:
-#   - name: pathToContext
-#     description: The build directory used by kaniko
-#     default: /workspace/source-repo
-#   - name: pathToDockerFile
-#     type: string
-#     description: The path to the dockerfile to build
-#     default: $(resources.inputs.source-repo.path)/Dockerfile
-#   resources:
-#     inputs:
-#       - name: source-repo
-#         type: git
-#     outputs:
-#       - name: builtImage
-#         type: image
-#   steps:
-#     - name: build-and-push
-#       image: gcr.io/kaniko-project/executor:v1.9.0
-#       command:
-#         - /kaniko/executor
-#       args:
-#         - --dockerfile=$(params.pathToDockerFile)
-#         - --destination=$(resources.outputs.builtImage.url)
-#         - --context=$(params.pathToContext)
 ---
 apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
-  name: move-files-and-open-pr
-  namespace: getting-started
+  name: move-files
+  namespace: default
 spec:
   workspaces:
     - name: source
@@ -69,6 +38,7 @@ spec:
         #!/usr/bin/env sh
         git config --global user.email "$(params.GIT_USER_EMAIL)"
         git config --global user.name "$(params.GIT_USER_NAME)"
+        git config --global --add safe.directory /workspace/destination
 
         git checkout -b $(params.destination-branch)
         git add .
@@ -76,11 +46,3 @@ spec:
         git commit -m "$(params.commit-message)"
 
         git push -u origin $(params.destination-branch)
-    # - name: create-pr
-    #   image: gcr.io/kaniko-project/executor:v1.9.0
-    #   command:
-    #     - /kaniko/executor
-    #   args:
-    #     - --dockerfile=$(params.pathToDockerFile)
-    #     - --destination=$(resources.outputs.builtImage.url)
-    #     - --context=$(params.pathToContext)

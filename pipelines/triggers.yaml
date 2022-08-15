@@ -20,7 +20,7 @@ spec:
       metadata:
         generateName: sample-pipeline-run-
       spec:
-        serviceAccountName: tekton-triggers-example-sa
+        serviceAccountName: build-bot
         pipelineRef:
           name: sample-pipeline
         params:
@@ -52,9 +52,9 @@ spec:
           - name: docker-credentials
             secret:
               secretName: ghcr-credentials
-          - name: git-credentials
-            secret:
-              secretName: git-credentials
+          # - name: git-credentials
+          #   secret:
+          #     secretName: git-credentials
 ---
 apiVersion: triggers.tekton.dev/v1beta1
 kind: TriggerBinding
@@ -67,6 +67,10 @@ spec:
       value: $(body.head_commit.id)
     - name: git-url
       value: $(body.repository.clone_url)
+    - name: git-full-name
+      value: $(body.repository.full_name)
+    - name: git-master-branch
+      value: $(body.repository.master_branch)
 ---
 apiVersion: triggers.tekton.dev/v1beta1
 kind: TriggerBinding

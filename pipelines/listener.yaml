@@ -53,6 +53,12 @@ spec:
                 secretKey: secretToken
             - name: eventTypes
               value: ["push"]
+        - name: "only on main"
+          ref:
+            name: cel
+          params:
+            - name: filter
+              value: "body.ref == 'refs/heads/main'"
       bindings:
         - ref: github-push-binding
       template:

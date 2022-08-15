@@ -8,6 +8,9 @@ spec:
   params:
     - name: git-url
     - name: git-revision
+    - name: git-full-name
+    - name: git-master-branch
+      default: main
     - name: image-name
     - name: image-tag
       default: latest
@@ -19,7 +22,6 @@ spec:
     - name: source-data
     - name: destination-data
     - name: docker-credentials
-    - name: git-credentials
   tasks:
     - name: clone-source
       taskRef:
@@ -32,25 +34,6 @@ spec:
       workspaces:
         - name: output
           workspace: source-data
-        - name: basic-auth
-          workspace: git-credentials
-    # - name: build-image
-    #   taskRef:
-    #     name: kaniko
-    #   params:
-    #     - name: IMAGE
-    #       value: $(params.image-name):$(params.image-tag)
-    #     - name: CONTEXT
-    #       value: $(params.path-to-image-context)
-    #     - name: DOCKERFILE
-    #       value: $(params.path-to-dockerfile)
-    #   runAfter:
-    #     - clone-source
-    #   workspaces:
-    #     - name: source
-    #       workspace: source-data
-    #     - name: dockerconfig
-    #       workspace: docker-credentials
     - name: clone-destination
       taskRef:
         name: git-clone
@@ -62,14 +45,32 @@ spec:
       workspaces:
         - name: output
           workspace: destination-data
-        - name: basic-auth
-          workspace: git-credentials
+    # TODO: add test
+    - name: build-image
+      taskRef:
+        name: kaniko
+      params:
+        - name: IMAGE
+          value: $(params.image-name):$(params.image-tag)
+        - name: CONTEXT
+          value: $(params.path-to-image-context)
+        - name: DOCKERFILE
+          value: $(params.path-to-dockerfile)
+      runAfter:
+        - clone-source
+      workspaces:
+        - name: source
+          workspace: source-data
+        - name: dockerconfig
+          workspace: docker-credentials
+    # TODO: add image scan
     - name: copy-files-to-destination
       taskRef:
-        name: move-files-and-open-pr
+        name: move-files
       runAfter:
         - clone-source
         - clone-destination
+        - build-image
       params:
         - name: source-files
           value: demo.yaml
@@ -82,3 +83,22 @@ spec:
           workspace: destination-data
         - name: destination
           workspace: destination-data
+    - name: open-pr
+      taskRef:
+        kind: Task
+        name: github-open-pr
+      runAfter:
+        - copy-files-to-destination
+      params:
+        - name: REPO_FULL_NAME
+          value: $(params.git-full-name)
+        - name: HEAD
+          value: tekton-pipelines
+        - name: BASE
+          value: $(params.git-master-branch)
+        - name: TITLE
+          value: "pipeline testing"
+        - name: BODY
+          value: "some pr message"
+        - name: GITHUB_TOKEN_SECRET_NAME
+          value: github-api-token
