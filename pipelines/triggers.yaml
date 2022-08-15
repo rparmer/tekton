@@ -5,11 +5,12 @@ metadata:
   namespace: default
 spec:
   params:
-    - name: git-revision
     - name: git-url
-    - name: git-full-name
-    - name: git-master-branch
-      default: main
+    - name: git-revision
+    - name: destination-git-url
+      default: https://github.com/rparmer/tekton-pipeline-environments.git
+    - name: destination-git-full-name
+      default: rparmer/tekton-pipeline-environments
     - name: image-name
       default: ghcr.io/rparmer/tekton
     - name: image-tag
@@ -24,14 +25,10 @@ spec:
         pipelineRef:
           name: sample-pipeline
         params:
-          - name: git-url
+          - name: source-git-url
             value: $(tt.params.git-url)
-          - name: git-revision
+          - name: source-git-revision
             value: $(tt.params.git-revision)
-          - name: git-full-name
-            value: $(tt.params.git-full-name)
-          - name: git-master-branch
-            value: $(tt.params.git-master-branch)
           - name: image-name
             value: $(tt.params.image-name)
           - name: image-tag
@@ -71,10 +68,6 @@ spec:
       value: $(body.head_commit.id)
     - name: git-url
       value: $(body.repository.clone_url)
-    - name: git-full-name
-      value: $(body.repository.full_name)
-    - name: git-master-branch
-      value: $(body.repository.master_branch)
 ---
 apiVersion: triggers.tekton.dev/v1beta1
 kind: TriggerBinding

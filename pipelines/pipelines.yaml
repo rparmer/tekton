@@ -6,10 +6,13 @@ metadata:
   namespace: default
 spec:
   params:
-    - name: git-url
-    - name: git-revision
-    - name: git-full-name
-    - name: git-master-branch
+    - name: source-git-url
+    - name: source-git-revision
+    - name: destination-git-url
+    - name: destination-git-full-name
+    - name: destination-git-revision
+      default: main
+    - name: destination-git-master-branch
       default: main
     - name: image-name
     - name: image-tag
@@ -28,9 +31,9 @@ spec:
         name: git-clone
       params:
         - name: url
-          value: $(params.git-url)
+          value: $(params.source-git-url)
         - name: revision
-          value: $(params.git-revision)
+          value: $(params.source-git-revision)
       workspaces:
         - name: output
           workspace: source-data
@@ -39,9 +42,9 @@ spec:
         name: git-clone
       params:
         - name: url
-          value: $(params.git-url)
+          value: $(params.destination-git-url)
         - name: revision
-          value: $(params.git-revision)
+          value: $(params.destination-git-revision)
       workspaces:
         - name: output
           workspace: destination-data
@@ -75,7 +78,7 @@ spec:
         - name: source-files
           value: demo.yaml
         - name: destination-dir
-          value: sample-destination
+          value: dev
         - name: destination-branch
           value: tekton-pipelines
       workspaces:
@@ -91,11 +94,11 @@ spec:
         - copy-files-to-destination
       params:
         - name: REPO_FULL_NAME
-          value: $(params.git-full-name)
+          value: $(params.destination-git-full-name)
         - name: HEAD
           value: tekton-pipelines
         - name: BASE
-          value: $(params.git-master-branch)
+          value: $(params.destination-git-master-branch)
         - name: TITLE
           value: "pipeline testing"
         - name: BODY
