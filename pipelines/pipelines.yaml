@@ -83,7 +83,7 @@ spec:
           value: tekton-pipelines
       workspaces:
         - name: source
-          workspace: destination-data
+          workspace: source-data
         - name: destination
           workspace: destination-data
     - name: open-pr
