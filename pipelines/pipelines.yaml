@@ -45,6 +45,8 @@ spec:
           value: $(params.destination-git-url)
         - name: revision
           value: $(params.destination-git-revision)
+        - name: depth
+          value: 0
       workspaces:
         - name: output
           workspace: destination-data
