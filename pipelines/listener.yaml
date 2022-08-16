@@ -59,6 +59,16 @@ spec:
           params:
             - name: filter
               value: "body.ref == 'refs/heads/main'"
+        - name: "only on 'demo' directory changes"
+          ref:
+            name: cel
+          params:
+            - name: filter
+              value: "body.head_commit.added.exists(x, x.startsWith('demo/'))"
+            - name: filter
+              value: "body.head_commit.removed.exists(x, x.startsWith('demo/'))"
+            - name: filter
+              value: "body.head_commit.modified.exists(x, x.startsWith('demo/'))"
       bindings:
         - ref: github-push-binding
       template:
