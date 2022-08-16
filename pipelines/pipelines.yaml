@@ -29,6 +29,7 @@ spec:
     - name: clone-source
       taskRef:
         name: git-clone
+        kind: ClusterTask
       params:
         - name: url
           value: $(params.source-git-url)
@@ -40,6 +41,7 @@ spec:
     - name: clone-destination
       taskRef:
         name: git-clone
+        kind: ClusterTask
       params:
         - name: url
           value: $(params.destination-git-url)
@@ -54,6 +56,7 @@ spec:
     - name: build-image
       taskRef:
         name: kaniko
+        kind: ClusterTask
       params:
         - name: IMAGE
           value: $(params.image-name):$(params.image-tag)
@@ -90,8 +93,8 @@ spec:
           workspace: destination-data
     - name: open-pr
       taskRef:
-        kind: Task
         name: github-open-pr
+        kind: ClusterTask
       runAfter:
         - copy-files-to-destination
       params:
