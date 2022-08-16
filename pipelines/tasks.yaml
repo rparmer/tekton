@@ -45,8 +45,7 @@ spec:
         git config --global user.name "$(params.GIT_USER_NAME)"
         git config --global --add safe.directory /workspace/destination
 
-        git pull
-        git checkout -B $(params.destination-branch)
+        git switch $(params.destination-branch)
         git add .
 
         git commit -m "$(params.commit-message)"
