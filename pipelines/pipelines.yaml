@@ -59,6 +59,8 @@ spec:
           value: $(params.destination-git-revision)
         - name: depth
           value: 0
+        - name: refspec
+          value: main
       workspaces:
         - name: output
           workspace: destination-data
