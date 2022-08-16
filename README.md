@@ -1,5 +1,19 @@
 # tekton
 
+## TODO
+- [ ] add triggers for pr, branch and tag/release events
+- [ ] create seperate build and release pipelines
+- [ ] deploy to multiple stages (different pipeline in different repo?)
+- [ ] solve chicken/egg scenario
+    - flux deploys tekton and pipelines
+    - pipelines run on each commit
+    - flux runs on a time interval
+    - the pipeline may be updated and committed, but the old pipeline will still run until the next flux sync
+    - this will cause a slight diff between expected pipeline configs
+    - one solution would be to separate pipeline code from dev code. these usually live together so idk how the dev experiance would be 
+- [ ] fix error when destination branch exists
+- [ ] fix error if pr already exists
+
 ## Tekton Setup
 
 ```bash
