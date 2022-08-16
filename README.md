@@ -11,7 +11,7 @@
     - the pipeline may be updated and committed, but the old pipeline will still run until the next flux sync
     - this will cause a slight diff between expected pipeline configs
     - one solution would be to separate pipeline code from dev code. these usually live together so idk how the dev experiance would be 
-- [ ] fix error when destination branch exists
+- [x] fix error when destination branch exists (custom task, fixed by fetch before checkout and `push -f`)
 - [ ] fix error if pr already exists
 
 ## Tekton Setup
