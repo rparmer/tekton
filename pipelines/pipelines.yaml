@@ -16,7 +16,7 @@ spec:
       type: string
     - name: destination-git-revision
       type: string
-      default: main
+      default: tekton-pipelines
     - name: destination-git-master-branch
       type: string
       default: main
