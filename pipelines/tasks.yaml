@@ -51,4 +51,4 @@ spec:
 
         git commit -m "$(params.commit-message)"
 
-        git push -u origin $(params.destination-branch)
+        git push -f -u origin $(params.destination-branch)
