@@ -10,8 +10,8 @@ spec:
   # config:
   #   nodeSelector: <>
   #   tolerations: []
-  # pipeline:
-  #   disable-affinity-assistant: false
+  pipeline:
+    disable-affinity-assistant: true # required to support multiple pvc backed workspaces being attached to same stage
   #   disable-creds-init: false
   #   disable-home-env-overwrite: true
   #   disable-working-directory-overwrite: true
@@ -26,7 +26,7 @@ spec:
   #   running-in-environment-with-injected-sidecars: true
   pruner:
     resources:
-    - taskrun
+    # - taskrun
     - pipelinerun
     keep: 3
     schedule: "* * * * *"
