@@ -7,9 +7,9 @@ resources:
   - https://raw.githubusercontent.com/tektoncd/catalog/main/task/github-open-pr/0.2/github-open-pr.yaml
 patches:
   - patch: |-
-    - op: replace
-      path: /kind
-      value: ClusterTask
-  target:
-    group: tekton.dev/v1beta1
-    kind: Task
+      - op: replace
+        path: /kind
+        value: ClusterTask
+    target:
+      group: tekton.dev
+      kind: Task
