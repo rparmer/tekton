@@ -7,19 +7,29 @@ metadata:
 spec:
   params:
     - name: source-git-url
+      type: string
     - name: source-git-revision
+      type: string
     - name: destination-git-url
+      type: string
     - name: destination-git-full-name
+      type: string
     - name: destination-git-revision
+      type: string
       default: main
     - name: destination-git-master-branch
+      type: string
       default: main
     - name: image-name
+      type: string
     - name: image-tag
+      type: string
       default: latest
     - name: path-to-image-context
+      type: string
       default: ./
     - name: path-to-dockerfile
+      type: string
       default: ./Dockerfile
   workspaces:
     - name: source-data

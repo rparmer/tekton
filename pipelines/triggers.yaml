@@ -6,14 +6,20 @@ metadata:
 spec:
   params:
     - name: git-url
+      type: string
     - name: git-revision
+      type: string
     - name: destination-git-url
+      type: string
       default: https://github.com/rparmer/tekton-pipeline-environments.git
     - name: destination-git-full-name
+      type: string
       default: rparmer/tekton-pipeline-environments
     - name: image-name
+      type: string
       default: ghcr.io/rparmer/tekton
     - name: image-tag
+      type: string
       default: latest
   resourcetemplates:
     - apiVersion: tekton.dev/v1beta1

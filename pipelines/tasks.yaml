@@ -10,16 +10,21 @@ spec:
     - name: destination
   params:
     - name: source-files
+      type: string
     - name: destination-dir
       type: string
       default: ""
     - name: destination-branch
+      type: string
       default: main
     - name: commit-message
+      type: string
       default: "commit from tekton pipeline"
     - name: GIT_USER_EMAIL
+      type: string
       default: <>
     - name: GIT_USER_NAME
+      type: string
       default: tekton-automation
   steps:
     - name: copy-files-to-destination
