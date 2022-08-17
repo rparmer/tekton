@@ -89,7 +89,7 @@ spec:
         - build-image
       params:
         - name: source-files
-          value: demo.yaml
+          value: demo/
         - name: destination-dir
           value: dev
         - name: destination-branch
