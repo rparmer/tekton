@@ -1,7 +1,7 @@
 apiVersion: triggers.tekton.dev/v1beta1
 kind: TriggerTemplate
 metadata:
-  name: sample-pipeline-trigger-template
+  name: sample-release-pipeline-trigger-template
   namespace: default
 spec:
   params:
@@ -64,7 +64,7 @@ spec:
 apiVersion: triggers.tekton.dev/v1beta1
 kind: TriggerTemplate
 metadata:
-  name: sample-pipeline-pr-trigger-template
+  name: sample-test-pipeline-trigger-template
   namespace: default
 spec:
   params:
@@ -114,5 +114,16 @@ spec:
   params:
     - name: git-revision
       value: $(body.pull_request.head.sha)
+    - name: git-url
+      value: $(body.repository.clone_url)
+---
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerBinding
+metadata:
+  name: github-tag-binding
+spec:
+  params:
+    - name: git-revision
+      value: $(body.ref.split('/')[2])
     - name: git-url
       value: $(body.repository.clone_url)

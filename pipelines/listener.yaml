@@ -76,7 +76,7 @@ spec:
       bindings:
         - ref: github-push-binding
       template:
-        ref: sample-pipeline-trigger-template
+        ref: sample-build-pipeline-trigger-template
     - name: main-pull-request-events
       interceptors:
         - ref:
@@ -103,7 +103,30 @@ spec:
       bindings:
         - ref: github-pr-binding
       template:
-        ref: sample-pipeline-pr-trigger-template
+        ref: sample-test-pipeline-trigger-template
+    - name: tag-push-events
+      interceptors:
+        - ref:
+            name: github
+          params:
+            - name: secretRef
+              value:
+                secretName: github-secret
+                secretKey: secretToken
+            - name: eventTypes
+              value: ["push"]
+        - name: "only on tag creation"
+          ref:
+            name: cel
+          params:
+            - name: filter
+              value: >
+                body.ref.startsWith('refs/tags') &&
+                body.created == true
+      bindings:
+        - ref: github-tag-binding
+      template:
+        ref: sample-release-pipeline-trigger-template
   resources:
     kubernetesResource:
       spec:

@@ -55,7 +55,7 @@ spec:
         - name: DOCKERFILE
           value: $(params.path-to-dockerfile)
       runAfter:
-        - clone-source
+        - run-tests
       workspaces:
         - name: source
           workspace: shared-data
