@@ -27,6 +27,22 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
 kind: Kustomization
 metadata:
+  name: tekton-dashboard
+  namespace: flux-system
+spec:
+  interval: 1m
+  dependsOn:
+    - name: tekton-core
+  sourceRef:
+    kind: GitRepository
+    name: tekton
+  path: ./install/dashboard
+  prune: true
+  validation: client
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
   name: tekton-config
   namespace: flux-system
 spec:

@@ -19,11 +19,11 @@ spec:
     - apiVersion: tekton.dev/v1beta1
       kind: PipelineRun
       metadata:
-        generateName: sample-pipeline-run-
+        generateName: sample-release-pipeline-run-
       spec:
         serviceAccountName: build-bot
         pipelineRef:
-          name: sample-pipeline
+          name: sample-release-pipeline
         params:
           - name: source-git-url
             value: $(tt.params.git-url)

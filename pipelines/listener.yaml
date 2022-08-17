@@ -1,15 +1,18 @@
+---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: tekton-triggers-example-sa
+  name: tekton-triggers-sa
+  namespace: default
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: triggers-example-eventlistener-binding
+  name: triggers-eventlistener-binding
+  namespace: default
 subjects:
 - kind: ServiceAccount
-  name: tekton-triggers-example-sa
+  name: tekton-triggers-sa
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -18,10 +21,10 @@ roleRef:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: triggers-example-eventlistener-clusterbinding
+  name: triggers-eventlistener-clusterbinding
 subjects:
 - kind: ServiceAccount
-  name: tekton-triggers-example-sa
+  name: tekton-triggers-sa
   namespace: default
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -32,6 +35,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: github-secret
+  namespace: default
 type: Opaque
 stringData:
   secretToken: "1234567"
@@ -40,6 +44,7 @@ apiVersion: triggers.tekton.dev/v1beta1
 kind: EventListener
 metadata:
   name: github-listener
+  namespace: default
 spec:
   triggers:
     - name: push-events
@@ -98,7 +103,7 @@ spec:
       spec:
         template:
           spec:
-            serviceAccountName: tekton-triggers-example-sa
+            serviceAccountName: tekton-triggers-sa
             containers:
               - resources:
                   requests:
@@ -112,6 +117,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: github-listener
+  namespace: default
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt
 spec:
