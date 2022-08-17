@@ -16,7 +16,7 @@ spec:
     - apiVersion: tekton.dev/v1beta1
       kind: PipelineRun
       metadata:
-        generateName: sample-release-pipeline-run-
+        generateName: sample-build-pipeline-run-
       spec:
         serviceAccountName: build-bot
         pipelineRef:

@@ -40,6 +40,8 @@ spec:
     - name: run-tests
       taskRef:
         name: run-tests
+      runAfter:
+        - clone-source
       workspaces:
         - name: source
           workspace: shared-data
@@ -91,6 +93,8 @@ spec:
     - name: run-tests
       taskRef:
         name: run-tests
+      runAfter:
+        - clone-source
       workspaces:
         - name: source
           workspace: shared-data
