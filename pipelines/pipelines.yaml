@@ -163,7 +163,7 @@ spec:
         - clone-source
       workspaces:
         - name: source
-          workspace: shared-data
+          workspace: source-data
     - name: build-image
       taskRef:
         name: kaniko
