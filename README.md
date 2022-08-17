@@ -1,8 +1,8 @@
 # tekton
 
 ## TODO
-- [ ] add triggers for pr, branch and tag/release events
-- [ ] create seperate build and release pipelines
+- [x] add triggers for pr, branch and tag/release events
+- [x] create seperate build and release pipelines
 - [ ] deploy to multiple stages (different pipeline in different repo?)
 - [ ] solve chicken/egg scenario
     - flux deploys tekton and pipelines
