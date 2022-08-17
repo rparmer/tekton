@@ -168,7 +168,9 @@ metadata:
   name: github-tag-binding
 spec:
   params:
-    - name: git-revision
+    - name: image-tag
       value: $(extensions.tag)
+    - name: git-revision
+      value: $(body.head_commit.id)
     - name: git-url
       value: $(body.repository.clone_url)
