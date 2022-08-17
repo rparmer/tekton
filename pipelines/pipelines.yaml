@@ -90,12 +90,12 @@ spec:
         kind: ClusterTask
       params:
         - name: url
-          value: $(params.source-git-url)
+          value: $(params.git-url)
         - name: revision
-          value: $(params.source-git-revision)
+          value: $(params.git-revision)
       workspaces:
         - name: output
-          workspace: source-data
+          workspace: shared-data
     # TODO: add test
     # - name: build-image
     #   taskRef:
