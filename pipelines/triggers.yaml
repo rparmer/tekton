@@ -30,6 +30,8 @@ spec:
             value: $(tt.params.image-name)
           - name: image-tag
             value: $(tt.params.image-tag)
+          - name: path-to-image-context
+            value: ./demo
         workspaces:
           - name: shared-data
             volumeClaimTemplate:
@@ -115,6 +117,8 @@ spec:
             value: $(tt.params.image-name)
           - name: image-tag
             value: $(tt.params.image-tag)
+          - name: path-to-image-context
+            value: ./demo
         workspaces:
           - name: source-data
             volumeClaimTemplate:
