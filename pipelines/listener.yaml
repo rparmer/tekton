@@ -47,7 +47,7 @@ metadata:
   namespace: default
 spec:
   triggers:
-    - name: push-events
+    - name: main-demo-push-events
       interceptors:
         - ref:
             name: github
@@ -77,7 +77,7 @@ spec:
         - ref: github-push-binding
       template:
         ref: sample-pipeline-trigger-template
-    - name: pull-request-events
+    - name: main-pull-request-events
       interceptors:
         - ref:
             name: github
@@ -94,10 +94,16 @@ spec:
           params:
             - name: filter
               value: "body.action in ['opened', 'synchronize', 'reopened']"
+        - name: "only on PRs to main"
+          ref:
+            name: cel
+          params:
+            - name: filter
+              value: "body.pull_request.base.ref == 'main'"
       bindings:
         - ref: github-pr-binding
       template:
-        ref: sample-pipeline-trigger-template
+        ref: sample-pipeline-pr-trigger-template
   resources:
     kubernetesResource:
       spec:

@@ -62,6 +62,39 @@ spec:
           #     secretName: git-credentials
 ---
 apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  name: sample-pipeline-pr-trigger-template
+  namespace: default
+spec:
+  params:
+    - name: git-url
+    - name: git-revision
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1beta1
+      kind: PipelineRun
+      metadata:
+        generateName: sample-test-pipeline-run-
+      spec:
+        serviceAccountName: build-bot
+        pipelineRef:
+          name: sample-test-pipeline
+        params:
+          - name: git-url
+            value: $(tt.params.git-url)
+          - name: git-revision
+            value: $(tt.params.git-revision)
+        workspaces:
+          - name: shared-data
+            volumeClaimTemplate:
+              spec:
+                accessModes:
+                  - ReadWriteOnce
+                resources:
+                  requests:
+                    storage: 1Gi
+---
+apiVersion: triggers.tekton.dev/v1beta1
 kind: TriggerBinding
 metadata:
   name: github-push-binding
