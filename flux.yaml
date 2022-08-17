@@ -59,7 +59,7 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
 kind: Kustomization
 metadata:
-  name: tekton-tasks
+  name: tekton-clustertasks
   namespace: flux-system
 spec:
   interval: 1m
@@ -68,7 +68,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: tekton
-  path: ./tasks
+  path: ./clustertasks
   prune: true
   validation: client
 ---
@@ -81,7 +81,7 @@ spec:
   interval: 1m
   dependsOn:
     - name: tekton-core
-    - name: tekton-tasks
+    - name: tekton-clustertasks
   sourceRef:
     kind: GitRepository
     name: tekton
