@@ -123,6 +123,10 @@ spec:
               value: >
                 body.ref.startsWith('refs/tags') &&
                 body.created == true
+            - name: overlays
+              value:
+                - key: tag
+                  expression: "body.ref.split('/')[2]"
       bindings:
         - ref: github-tag-binding
       template:

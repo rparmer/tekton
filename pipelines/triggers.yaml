@@ -124,6 +124,6 @@ metadata:
 spec:
   params:
     - name: git-revision
-      value: $(body.ref.split('/')[2])
+      value: $(extensions.tag)
     - name: git-url
       value: $(body.repository.clone_url)
