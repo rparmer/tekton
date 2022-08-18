@@ -57,11 +57,11 @@ spec:
     - apiVersion: tekton.dev/v1beta1
       kind: PipelineRun
       metadata:
-        generateName: sample-test-pipeline-run-
+        generateName: promote-to-environment-prod-run-
       spec:
         serviceAccountName: build-bot
         pipelineRef:
-          name: sample-test-pipeline
+          name: promote-to-environment
         params:
           - name: source-git-url
             value: $(tt.params.git-url)

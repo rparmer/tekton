@@ -40,12 +40,10 @@ spec:
           value: $(params.source-git-url)
         - name: revision
           value: $(params.source-git-revision)
-        - name: subdirectory
-          value: source
       workspaces:
         - name: output
           workspace: shared-data
-          subPath: source
+          subPath: source 
     - name: clone-destination
       taskRef:
         name: git-clone
@@ -55,8 +53,6 @@ spec:
           value: $(params.destination-git-url)
         - name: revision
           value: $(params.destination-git-clone-revision)
-        - name: subdirectory
-          value: destination
       workspaces:
         - name: output
           workspace: shared-data
@@ -70,6 +66,8 @@ spec:
       params:
         - name: source-files
           value: $(params.source-git-files)
+        - name: source-dir
+          value: $(params.source-git-directory)
         - name: destination-dir
           value: $(params.destination-git-directory)
         - name: destination-branch
