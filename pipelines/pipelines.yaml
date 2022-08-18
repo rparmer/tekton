@@ -132,8 +132,8 @@ spec:
       type: string
       default: ./Dockerfile
   workspaces:
-    - name: source-data
-    - name: destination-data
+    - name: shared-data
+    # - name: destination-data
     - name: docker-credentials
   tasks:
     - name: clone-source
@@ -145,9 +145,11 @@ spec:
           value: $(params.source-git-url)
         - name: revision
           value: $(params.source-git-revision)
+        - name: subdirectory
+          value: source
       workspaces:
         - name: output
-          workspace: source-data
+          workspace: shared-data
     - name: clone-destination
       taskRef:
         name: git-clone
@@ -157,9 +159,11 @@ spec:
           value: $(params.destination-git-url)
         - name: revision
           value: $(params.destination-git-revision)
+        - name: subdirectory
+          value: destination
       workspaces:
         - name: output
-          workspace: destination-data
+          workspace: shared-data
     - name: run-tests
       taskRef:
         name: run-tests
@@ -167,7 +171,8 @@ spec:
         - clone-source
       workspaces:
         - name: source
-          workspace: source-data
+          workspace: shared-data
+          subPath: source
     - name: build-image
       taskRef:
         name: kaniko
@@ -183,7 +188,8 @@ spec:
         - run-tests
       workspaces:
         - name: source
-          workspace: source-data
+          workspace: shared-data
+          subPath: source
         - name: dockerconfig
           workspace: docker-credentials
     # TODO: add image scan
@@ -201,9 +207,11 @@ spec:
           value: tekton-pipelines
       workspaces:
         - name: source
-          workspace: source-data
+          workspace: shared-data
+          subPath: source
         - name: destination
-          workspace: destination-data
+          workspace: shared-data
+          subPath: destination
     - name: open-pr
       taskRef:
         name: github-open-pr
