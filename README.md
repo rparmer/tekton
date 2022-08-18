@@ -32,6 +32,12 @@ Adding a directory filter to the eventlistener helped address the chicken/egg sc
 This helps to only kick off a pipeline on relevent changes, but it does not fully prevent the chicken/egg scenario.  For example say a file is change in the demo directory and in the pipelines directory, the old pipeline would kick off before Flux had a chance to deploy the new pipeline changes.  Given the current design of both tools there is not a way to fully prevent this type of scenario.
 
 ## Tekton Setup
+### Credentials
+This demo is not configured to use SOPS, so update the `pipeline-auth-sample.yaml` file with a true Github API token and manually apply it to the cluster before getting started.
+```bash
+kubectl apply -f pipeline-auth-sample.yaml
+```
+
 ### Flux
 ```bash
 kubectl apply -f flux.yaml
