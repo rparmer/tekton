@@ -19,7 +19,7 @@
     - possible support for configmaps
 
 ### Chicken/egg scenario
-Adding a directory filter to the eventlistener helped address the chicken/egg scenario, but it did not solve it completely.  Here is an example filter used to only trigger a pipeline when content changes in the `demo` directory.
+Adding a directory filter to the EventListener helped address the chicken/egg scenario, but it did not solve it completely.  Here is an example filter used to only trigger a pipeline when content changes in the `demo` directory.
 ```yaml
 - name: "only on 'demo' directory changes"
   ref:
