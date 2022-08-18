@@ -15,7 +15,7 @@ spec:
       default: ""
     - name: source-git-files
       type: string
-      default: "."
+      default: "*"
     - name: destination-git-url
       type: string
     - name: destination-git-full-name
