@@ -34,6 +34,7 @@ spec:
         #!/usr/bin/env sh
         set -e
         destination="$(workspaces.destination.path)/$(params.destination-dir)"
+        echo "$destination"
         mkdir -p "$destination"
         cp -r $(params.source-files) "$destination"
         ls -al "$destination"
