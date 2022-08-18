@@ -8,9 +8,12 @@ spec:
   workspaces:
     - name: source
     - name: destination
+    # - name: config
   params:
     - name: source-files
-      type: string
+      type: array
+      # default:
+      #   - "*"
     - name: source-dir
       type: string
       default: ""
@@ -32,13 +35,14 @@ spec:
   steps:
     - name: copy-files-to-destination
       image: alpine
-      workingDir: $(workspaces.source.path)
+      args: ["$(params.source-files[*])"]
+      workingDir: $(workspaces.source.path)/$(params.source-dir)
       script: |
         #!/usr/bin/env sh
         set -e
         destination="$(workspaces.destination.path)/$(params.destination-dir)"
         mkdir -p "$destination"
-        cp -r ./$(params.source-dir)/$(params.source-files) "$destination"
+        cp -r ${@} "$destination"
     - name: commit-to-destination
       image: alpine/git
       workingDir: $(workspaces.destination.path)

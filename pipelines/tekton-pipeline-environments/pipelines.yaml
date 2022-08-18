@@ -14,8 +14,9 @@ spec:
       type: string
       default: ""
     - name: source-git-files
-      type: string
-      default: "*"
+      type: array
+      default:
+        - "*"
     - name: destination-git-url
       type: string
     - name: destination-git-full-name
@@ -30,6 +31,7 @@ spec:
       default: main
   workspaces:
     - name: shared-data
+    # - name: config-data
   tasks:
     - name: clone-source
       taskRef:
@@ -65,7 +67,7 @@ spec:
         - clone-destination
       params:
         - name: source-files
-          value: $(params.source-git-files)
+          value: ["$(params.source-git-files[*])"]
         - name: source-dir
           value: $(params.source-git-directory)
         - name: destination-dir

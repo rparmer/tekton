@@ -6,3 +6,4 @@ resources:
 - triggers.yaml
 - tasks.yaml
 - pipelines.yaml
+# - config.yaml
