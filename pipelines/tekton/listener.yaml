@@ -1,0 +1,171 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: tekton-triggers-sa
+  namespace: default
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: triggers-eventlistener-binding
+  namespace: default
+subjects:
+- kind: ServiceAccount
+  name: tekton-triggers-sa
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: tekton-triggers-eventlistener-roles
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: triggers-eventlistener-clusterbinding
+subjects:
+- kind: ServiceAccount
+  name: tekton-triggers-sa
+  namespace: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: tekton-triggers-eventlistener-clusterroles
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: tekton-github-secret
+  namespace: default
+type: Opaque
+stringData:
+  secretToken: "1234567"
+---
+apiVersion: triggers.tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  name: tekton-listener
+  namespace: default
+spec:
+  triggers:
+    - name: main-demo-push-events
+      interceptors:
+        - ref:
+            name: github
+          params:
+            - name: secretRef
+              value:
+                secretName: tekton-github-secret
+                secretKey: secretToken
+            - name: eventTypes
+              value: ["push"]
+        - name: "only on main"
+          ref:
+            name: cel
+          params:
+            - name: filter
+              value: "body.ref == 'refs/heads/main'"
+        - name: "only on 'demo' directory changes"
+          ref:
+            name: cel
+          params:
+            - name: filter
+              value: >
+                body.head_commit.added.exists(x, x.startsWith('demo/')) ||
+                body.head_commit.removed.exists(x, x.startsWith('demo/')) ||
+                body.head_commit.modified.exists(x, x.startsWith('demo/'))
+      bindings:
+        - ref: github-push-binding
+      template:
+        ref: sample-build-pipeline-trigger-template
+    - name: main-pull-request-events
+      interceptors:
+        - ref:
+            name: github
+          params:
+            - name: secretRef
+              value:
+                secretName: github-secret
+                secretKey: secretToken
+            - name: eventTypes
+              value: ["pull_request"]
+        - name: "only when PRs are opened"
+          ref:
+            name: cel
+          params:
+            - name: filter
+              value: "body.action in ['opened', 'synchronize', 'reopened']"
+        - name: "only on PRs to main"
+          ref:
+            name: cel
+          params:
+            - name: filter
+              value: "body.pull_request.base.ref == 'main'"
+      bindings:
+        - ref: github-pr-binding
+      template:
+        ref: sample-test-pipeline-trigger-template
+    - name: tag-push-events
+      interceptors:
+        - ref:
+            name: github
+          params:
+            - name: secretRef
+              value:
+                secretName: github-secret
+                secretKey: secretToken
+            - name: eventTypes
+              value: ["push"]
+        - name: "only on tag creation"
+          ref:
+            name: cel
+          params:
+            - name: filter
+              value: >
+                body.ref.startsWith('refs/tags') &&
+                body.created == true
+            - name: overlays
+              value:
+                - key: tag
+                  expression: "body.ref.split('/')[2]"
+      bindings:
+        - ref: github-tag-binding
+      template:
+        ref: sample-release-pipeline-trigger-template
+  resources:
+    kubernetesResource:
+      spec:
+        template:
+          spec:
+            serviceAccountName: tekton-triggers-sa
+            containers:
+              - resources:
+                  requests:
+                    memory: 64Mi
+                    cpu: 250m
+                  limits:
+                    memory: 128Mi
+                    cpu: 500m
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: tekton-el
+  namespace: default
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+spec:
+  tls:
+  - hosts:
+    - tekton-el.russparmer.dev
+    secretName: tekton-el-tls
+  rules:
+  - host: tekton-el.russparmer.dev
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: el-tekton-listener
+            port:
+              name: http-listener

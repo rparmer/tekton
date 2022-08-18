@@ -1,0 +1,232 @@
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: sample-build-pipeline
+  namespace: default
+spec:
+  params:
+    - name: git-url
+      type: string
+    - name: git-revision
+      type: string
+    - name: image-name
+      type: string
+    - name: image-tag
+      type: string
+      default: latest
+    - name: path-to-image-context
+      type: string
+      default: ./
+    - name: path-to-dockerfile
+      type: string
+      default: ./Dockerfile
+  workspaces:
+    - name: shared-data
+    - name: docker-credentials
+  tasks:
+    - name: clone-source
+      taskRef:
+        name: git-clone
+        kind: ClusterTask
+      params:
+        - name: url
+          value: $(params.git-url)
+        - name: revision
+          value: $(params.git-revision)
+      workspaces:
+        - name: output
+          workspace: shared-data
+    - name: run-tests
+      taskRef:
+        name: run-tests
+      runAfter:
+        - clone-source
+      workspaces:
+        - name: source
+          workspace: shared-data
+    - name: build-image
+      taskRef:
+        name: kaniko
+        kind: ClusterTask
+      params:
+        - name: IMAGE
+          value: $(params.image-name):$(params.image-tag)
+        - name: CONTEXT
+          value: $(params.path-to-image-context)
+        - name: DOCKERFILE
+          value: $(params.path-to-dockerfile)
+      runAfter:
+        - run-tests
+      workspaces:
+        - name: source
+          workspace: shared-data
+        - name: dockerconfig
+          workspace: docker-credentials
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: sample-test-pipeline
+  namespace: default
+spec:
+  params:
+    - name: git-url
+      type: string
+    - name: git-revision
+      type: string
+  workspaces:
+    - name: shared-data
+  tasks:
+    - name: clone-source
+      taskRef:
+        name: git-clone
+        kind: ClusterTask
+      params:
+        - name: url
+          value: $(params.git-url)
+        - name: revision
+          value: $(params.git-revision)
+      workspaces:
+        - name: output
+          workspace: shared-data
+    - name: run-tests
+      taskRef:
+        name: run-tests
+      runAfter:
+        - clone-source
+      workspaces:
+        - name: source
+          workspace: shared-data
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: sample-release-pipeline
+  namespace: default
+spec:
+  params:
+    - name: source-git-url
+      type: string
+    - name: source-git-revision
+      type: string
+    - name: destination-git-url
+      type: string
+    - name: destination-git-full-name
+      type: string
+    - name: destination-git-revision
+      type: string
+      default: main
+    - name: destination-git-master-branch
+      type: string
+      default: main
+    - name: image-name
+      type: string
+    - name: image-tag
+      type: string
+      default: latest
+    - name: path-to-image-context
+      type: string
+      default: ./
+    - name: path-to-dockerfile
+      type: string
+      default: ./Dockerfile
+  workspaces:
+    - name: shared-data
+    - name: docker-credentials
+  tasks:
+    - name: clone-source
+      taskRef:
+        name: git-clone
+        kind: ClusterTask
+      params:
+        - name: url
+          value: $(params.source-git-url)
+        - name: revision
+          value: $(params.source-git-revision)
+        - name: subdirectory
+          value: source
+      workspaces:
+        - name: output
+          workspace: shared-data
+    - name: clone-destination
+      taskRef:
+        name: git-clone
+        kind: ClusterTask
+      params:
+        - name: url
+          value: $(params.destination-git-url)
+        - name: revision
+          value: $(params.destination-git-revision)
+        - name: subdirectory
+          value: destination
+      workspaces:
+        - name: output
+          workspace: shared-data
+    - name: run-tests
+      taskRef:
+        name: run-tests
+      runAfter:
+        - clone-source
+      workspaces:
+        - name: source
+          workspace: shared-data
+          subPath: source
+    - name: build-image
+      taskRef:
+        name: kaniko
+        kind: ClusterTask
+      params:
+        - name: IMAGE
+          value: $(params.image-name):$(params.image-tag)
+        - name: CONTEXT
+          value: $(params.path-to-image-context)
+        - name: DOCKERFILE
+          value: $(params.path-to-dockerfile)
+      runAfter:
+        - run-tests
+      workspaces:
+        - name: source
+          workspace: shared-data
+          subPath: source
+        - name: dockerconfig
+          workspace: docker-credentials
+    # TODO: add image scan
+    - name: copy-files-to-destination
+      taskRef:
+        name: move-files
+      runAfter:
+        - build-image
+      params:
+        - name: source-files
+          value: demo/
+        - name: destination-dir
+          value: dev
+        - name: destination-branch
+          value: tekton-pipelines
+      workspaces:
+        - name: source
+          workspace: shared-data
+          subPath: source
+        - name: destination
+          workspace: shared-data
+          subPath: destination
+    - name: open-pr
+      taskRef:
+        name: github-open-pr
+        kind: ClusterTask
+      runAfter:
+        - copy-files-to-destination
+      params:
+        - name: REPO_FULL_NAME
+          value: $(params.destination-git-full-name)
+        - name: HEAD
+          value: tekton-pipelines
+        - name: BASE
+          value: $(params.destination-git-master-branch)
+        - name: TITLE
+          value: "pipeline testing"
+        - name: BODY
+          value: "some pr message"
+        - name: GITHUB_TOKEN_SECRET_NAME
+          value: github-api-token
