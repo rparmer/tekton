@@ -93,7 +93,7 @@ spec:
         - name: HEAD
           value: $(params.destination-git-branch)
         - name: BASE
-          value: $(params.destination-git-revision)
+          value: $(params.destination-git-clone-revision)
         - name: TITLE
           value: "pipeline testing"
         - name: BODY
