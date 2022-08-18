@@ -47,7 +47,7 @@ metadata:
   namespace: default
 spec:
   triggers:
-    - name: main-demo-push-events
+    - name: main-dev-push-events
       interceptors:
         - ref:
             name: github
@@ -70,41 +70,14 @@ spec:
           params:
             - name: filter
               value: >
-                body.head_commit.added.exists(x, x.startsWith('demo/')) ||
-                body.head_commit.removed.exists(x, x.startsWith('demo/')) ||
-                body.head_commit.modified.exists(x, x.startsWith('demo/'))
+                body.head_commit.added.exists(x, x.startsWith('dev/')) ||
+                body.head_commit.removed.exists(x, x.startsWith('dev/')) ||
+                body.head_commit.modified.exists(x, x.startsWith('dev/'))
       bindings:
         - ref: github-push-binding
       template:
-        ref: sample-build-pipeline-trigger-template
-    - name: main-pull-request-events
-      interceptors:
-        - ref:
-            name: github
-          params:
-            - name: secretRef
-              value:
-                secretName: tekton-pipeline-environments-github-secret
-                secretKey: secretToken
-            - name: eventTypes
-              value: ["pull_request"]
-        - name: "only when PRs are opened"
-          ref:
-            name: cel
-          params:
-            - name: filter
-              value: "body.action in ['opened', 'synchronize', 'reopened']"
-        - name: "only on PRs to main"
-          ref:
-            name: cel
-          params:
-            - name: filter
-              value: "body.pull_request.base.ref == 'main'"
-      bindings:
-        - ref: github-pr-binding
-      template:
-        ref: sample-test-pipeline-trigger-template
-    - name: tag-push-events
+        ref: dev-pipeline-trigger-template
+    - name: main-staging-push-events
       interceptors:
         - ref:
             name: github
@@ -115,22 +88,25 @@ spec:
                 secretKey: secretToken
             - name: eventTypes
               value: ["push"]
-        - name: "only on tag creation"
+        - name: "only on main"
+          ref:
+            name: cel
+          params:
+            - name: filter
+              value: "body.ref == 'refs/heads/main'"
+        - name: "only on 'demo' directory changes"
           ref:
             name: cel
           params:
             - name: filter
               value: >
-                body.ref.startsWith('refs/tags') &&
-                body.created == true
-            - name: overlays
-              value:
-                - key: tag
-                  expression: "body.ref.split('/')[2]"
+                body.head_commit.added.exists(x, x.startsWith('staging/')) ||
+                body.head_commit.removed.exists(x, x.startsWith('staging/')) ||
+                body.head_commit.modified.exists(x, x.startsWith('staging/'))
       bindings:
-        - ref: github-tag-binding
+        - ref: github-push-binding
       template:
-        ref: sample-release-pipeline-trigger-template
+        ref: staging-pipeline-trigger-template
   resources:
     kubernetesResource:
       spec:

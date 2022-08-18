@@ -53,25 +53,3 @@ spec:
         git commit -m "$(params.commit-message)"
 
         git push -f -u origin $(params.destination-branch)
----
-apiVersion: tekton.dev/v1beta1
-kind: Task
-metadata:
-  name: run-tests
-  namespace: default
-spec:
-  workspaces:
-    - name: source
-  steps:
-    - name: unit-tests
-      image: alpine
-      workingDir: $(workspaces.source.path)
-      script: |
-        #!/usr/bin/env sh
-        echo "running unit tests"
-    - name: integration-tests
-      image: alpine
-      workingDir: $(workspaces.source.path)
-      script: |
-        #!/usr/bin/env sh
-        echo "running integration tests"
