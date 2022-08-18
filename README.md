@@ -2,9 +2,9 @@
 
 ## TODO
 - [x] add triggers for pr, branch and tag/release events
-- [x] create seperate build and release pipelines
+- [x] create seperate build and release pipelines 
 - [ ] deploy to multiple stages (different pipeline in different repo?)
-- [ ] solve chicken/egg scenario
+- [x] solve chicken/egg scenario - ***see below***
     - flux deploys tekton and pipelines
     - pipelines run on each commit
     - flux runs on a time interval
@@ -13,6 +13,23 @@
     - one solution would be to separate pipeline code from dev code. these usually live together so idk how the dev experiance would be 
 - [x] fix error when destination branch exists (custom task, fixed by fetch before checkout and `push -f`)
 - [ ] fix error if pr already exists
+- [ ] fully parameterize pipelines
+    - possible support for configmaps
+
+### Chicken/egg scenario
+Adding a directory filter to the eventlistener helped address the chicken/egg scenario, but it did not solve it completely.  Here is an example filter used to only trigger a pipeline when content changes in the `demo` directory.
+```yaml
+- name: "only on 'demo' directory changes"
+  ref:
+  name: cel
+  params:
+  - name: filter
+    value: >
+      body.head_commit.added.exists(x, x.startsWith('demo/')) ||
+      body.head_commit.removed.exists(x, x.startsWith('demo/')) ||
+      body.head_commit.modified.exists(x, x.startsWith('demo/'))
+```
+This helps to only kick off a pipeline on relevent changes, but it does not fully prevent the chicken/egg scenario.  For example say a file is change in the demo directory and in the pipelines directory, the old pipeline would kick off before Flux had a chance to deploy the new pipeline changes.  Given the current design of both tools there is not a way to fully prevent this type of scenario.
 
 ## Tekton Setup
 ### Flux
@@ -29,7 +46,7 @@ kubectl apply -f https://storage.googleapis.com/tekton-releases/pipeline/previou
 kubectl apply -f https://storage.googleapis.com/tekton-releases/triggers/previous/v0.20.2/release.yaml
 kubectl apply -f https://storage.googleapis.com/tekton-releases/triggers/previous/v0.20.2/interceptors.yaml
 
-# add support for operator actions (global pipeline config, pruner, etc)
+# add support for operator actions (global pipeline config, pruner, etc) - optional
 kubectl apply -f https://storage.googleapis.com/tekton-releases/operator/previous/v0.60.1/release.yaml
 
 # tasks used for this demo that are installed from the Tekton Hub
