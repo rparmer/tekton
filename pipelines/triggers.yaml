@@ -128,14 +128,6 @@ spec:
                 resources:
                   requests:
                     storage: 1Gi
-          # - name: destination-data
-          #   volumeClaimTemplate:
-          #     spec:
-          #       accessModes:
-          #         - ReadWriteOnce
-          #       resources:
-          #         requests:
-          #           storage: 1Gi
           - name: docker-credentials
             secret:
               secretName: ghcr-credentials

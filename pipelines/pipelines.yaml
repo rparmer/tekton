@@ -133,7 +133,6 @@ spec:
       default: ./Dockerfile
   workspaces:
     - name: shared-data
-    # - name: destination-data
     - name: docker-credentials
   tasks:
     - name: clone-source
