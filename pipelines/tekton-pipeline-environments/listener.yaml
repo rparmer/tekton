@@ -157,7 +157,7 @@ spec:
   tls:
   - hosts:
     - tekton-pipeline-environments-el.russparmer.dev
-    secretName: tekton-el-tls
+    secretName: tekton-pipeline-environments-el-tls
   rules:
   - host: tekton-pipeline-environments-el.russparmer.dev
     http:
