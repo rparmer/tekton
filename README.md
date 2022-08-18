@@ -3,7 +3,9 @@
 ## TODO
 - [x] add triggers for pr, branch and tag/release events
 - [x] create seperate build and release pipelines 
-- [ ] deploy to multiple stages (different pipeline in different repo?)
+- [x] deploy to multiple stages (different pipeline in different repo?)
+    - created new EventListener with new triggers
+    - deployed to new namespace, probably did not need to but did to avoid pipeline name conflicts
 - [x] solve chicken/egg scenario - ***see below***
     - flux deploys tekton and pipelines
     - pipelines run on each commit
