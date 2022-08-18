@@ -10,8 +10,8 @@ spec:
   # config:
   #   nodeSelector: <>
   #   tolerations: []
-  pipeline:
-    disable-affinity-assistant: true # required to support multiple pvc backed workspaces being attached to same stage
+  # pipeline:
+  #   disable-affinity-assistant: true
   #   disable-creds-init: false
   #   disable-home-env-overwrite: true
   #   disable-working-directory-overwrite: true
@@ -30,5 +30,5 @@ spec:
     - pipelinerun
     keep: 3
     schedule: "* * * * *"
-  # dashboard:
-  #   readonly: true
+  dashboard:
+    readonly: true
