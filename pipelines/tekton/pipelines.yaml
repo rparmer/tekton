@@ -144,11 +144,10 @@ spec:
           value: $(params.source-git-url)
         - name: revision
           value: $(params.source-git-revision)
-        - name: subdirectory
-          value: source
       workspaces:
         - name: output
           workspace: shared-data
+          subPath: source
     - name: clone-destination
       taskRef:
         name: git-clone
@@ -158,11 +157,10 @@ spec:
           value: $(params.destination-git-url)
         - name: revision
           value: $(params.destination-git-revision)
-        - name: subdirectory
-          value: destination
       workspaces:
         - name: output
           workspace: shared-data
+          subPath: destination
     - name: run-tests
       taskRef:
         name: run-tests
