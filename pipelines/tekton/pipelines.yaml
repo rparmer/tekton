@@ -235,7 +235,7 @@ spec:
         - update-deployment-image
         - update-deployment-namespace
       params:
-        - name: source-files
+        - name: source-dir
           value: demo/kustomize
         - name: destination-dir
           value: dev
