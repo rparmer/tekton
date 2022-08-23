@@ -12,7 +12,7 @@ spec:
       type: string
       default: ""
     - name: args
-      description: `kustomize` command arguments
+      description: kustomize command arguments
       type: array
   steps:
     - name: kustomize
