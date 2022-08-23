@@ -33,6 +33,8 @@ spec:
             value: staging
           - name: destination-git-branch
             value: release-staging
+          - name: deployment-namespace
+            value: staging
         workspaces:
           - name: shared-data
             volumeClaimTemplate:
@@ -80,6 +82,8 @@ spec:
             value: prod
           - name: destination-git-branch
             value: release-prod
+          - name: deployment-namespace
+            value: prod
         workspaces:
           - name: shared-data
             volumeClaimTemplate:

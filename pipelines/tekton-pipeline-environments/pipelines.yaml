@@ -29,6 +29,8 @@ spec:
     - name: destination-git-clone-revision
       type: string
       default: main
+    - name: deployment-namespace
+      type: string
   workspaces:
     - name: shared-data
     # - name: config-data
@@ -59,12 +61,29 @@ spec:
         - name: output
           workspace: shared-data
           subPath: destination
+    - name: update-deployment-namespace
+      taskRef:
+        name: kustomize
+        kind: ClusterTask
+      runAfter:
+        - clone-source
+        - clone-destination
+      params:
+        - name: path
+          value: demo/kustomize
+        - name: args
+          value:
+            - edit
+            - set
+            - namespace
+            - $(params.deployment-namespace)
     - name: copy-files-to-destination
       taskRef:
         name: move-files
       runAfter:
         - clone-source
         - clone-destination
+        - update-deployment-namespace
       params:
         - name: source-files
           value: ["$(params.source-git-files[*])"]
