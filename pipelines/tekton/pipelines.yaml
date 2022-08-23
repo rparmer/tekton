@@ -189,15 +189,54 @@ spec:
           subPath: source
         - name: dockerconfig
           workspace: docker-credentials
-    # TODO: add image scan
+    # TODO: add image scan - if necessary
+    - name: update-deployment-image
+      taskRef:
+        name: kustomize
+        kind: ClusterTask
+      params:
+        - name: path
+          value: demo/kustomize
+        - name: args
+          value:
+            - edit
+            - set
+            - image
+            - $(params.image-name):$(params.image-tag)
+      runAfter:
+        - build-image
+      workspaces:
+        - name: source
+          workspace: shared-data
+          subPath: source
+    - name: update-deployment-namespace
+      taskRef:
+        name: kustomize
+        kind: ClusterTask
+      params:
+        - name: path
+          value: demo/kustomize
+        - name: args
+          value:
+            - edit
+            - set
+            - namespace
+            - dev
+      runAfter:
+        - update-deployment-image
+      workspaces:
+        - name: source
+          workspace: shared-data
+          subPath: source
     - name: copy-files-to-destination
       taskRef:
         name: move-files
       runAfter:
-        - build-image
+        - update-deployment-image
+        - update-deployment-namespace
       params:
         - name: source-files
-          value: demo/
+          value: demo/kustomize
         - name: destination-dir
           value: dev
         - name: destination-branch
