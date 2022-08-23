@@ -77,6 +77,10 @@ spec:
             - set
             - namespace
             - $(params.deployment-namespace)
+      workspaces:
+        - name: source
+          workspace: shared-data
+          subPath: source
     - name: copy-files-to-destination
       taskRef:
         name: move-files
