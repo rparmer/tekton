@@ -1,0 +1,21 @@
+---
+apiVersion: tekton.dev/v1beta1
+kind: ClusterTask
+metadata:
+  name: kustomize
+spec:
+  workspaces:
+    - name: source
+  params:
+    - name: path
+      description: path in workspace to find kustomization file
+      type: string
+      default: ""
+    - name: args
+      description: `kustomize` command arguments
+      type: array
+  steps:
+    - name: kustomize
+      image: k8s.gcr.io/kustomize/kustomize:v3.8.7
+      workingDir: $(workspaces.source.path)/$(params.path)
+      args: ["$(params.args[*]"]
