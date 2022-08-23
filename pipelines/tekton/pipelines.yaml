@@ -236,7 +236,7 @@ spec:
         - update-deployment-namespace
       params:
         - name: source-files
-          value: demo/kustomize/
+          value: demo/kustomize/*
         - name: destination-dir
           value: dev
         - name: destination-branch
