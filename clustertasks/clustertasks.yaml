@@ -18,4 +18,5 @@ spec:
     - name: kustomize
       image: k8s.gcr.io/kustomize/kustomize:v3.8.7
       workingDir: $(workspaces.source.path)/$(params.path)
+      command: ["/app/kustomize"]
       args: ["$(params.args[*]"]
