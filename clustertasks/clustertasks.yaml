@@ -24,6 +24,28 @@ spec:
 apiVersion: tekton.dev/v1beta1
 kind: ClusterTask
 metadata:
+  name: envsubst
+spec:
+  workspaces:
+    - name: source
+  params:
+    - name: tpl-filepath
+      description: path in workspace to tpl file
+      type: string
+    - name: output-filepath
+      description: path in workspace to output tpl file
+      type: string
+  steps:
+    - name: envsubst
+      image: ghcr.io/rparmer/envsubst
+      workingDir: $(workspaces.source.path)
+      script: |
+        #!/usr/bin/env sh
+        envsubst < $(params.tpl-filepath) > $(params.output-filepath)
+---
+apiVersion: tekton.dev/v1beta1
+kind: ClusterTask
+metadata:
   name: helm-release
 spec:
   workspaces:
