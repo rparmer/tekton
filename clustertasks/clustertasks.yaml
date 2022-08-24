@@ -29,6 +29,9 @@ spec:
   workspaces:
     - name: source
   params:
+    - name: chart-version
+      description: chart version to replace in tpl
+      type: string
     - name: tpl-filepath
       description: path in workspace to tpl file
       type: string
@@ -38,6 +41,9 @@ spec:
   steps:
     - name: envsubst
       image: ghcr.io/rparmer/envsubst
+      env:
+        - name: CHART_VERSION
+          value: $(params.chart-version)
       workingDir: $(workspaces.source.path)
       script: |
         #!/usr/bin/env sh
