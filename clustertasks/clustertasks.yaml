@@ -72,6 +72,6 @@ spec:
         git config --global user.name "$(params.GIT_USER_NAME)"
         git config --global --add safe.directory /workspace/gh-pages
         git add .
-        git commit -m "$(params.commit-message)"
+        git commit -m "$(params.release-message)"
         git push
   
