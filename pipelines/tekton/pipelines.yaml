@@ -258,7 +258,6 @@ spec:
         - name: source
           workspace: shared-data
           subPath: source
-      workspaces:
         - name: gh-pages
           workspace: shared-data
           subPath: gh-pages
