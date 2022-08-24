@@ -276,7 +276,7 @@ spec:
         - name: source
           workspace: shared-data
           subPath: source
-    - name: copy-kustomize-files-to-destination
+    - name: copy-files-to-destination
       taskRef:
         name: move-files
       runAfter:
