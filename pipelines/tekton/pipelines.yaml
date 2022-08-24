@@ -202,6 +202,26 @@ spec:
           subPath: source
         - name: dockerconfig
           workspace: docker-credentials
+    - name: helm-release
+      taskRef:
+        name: helm-release
+        kind: ClusterTask
+      params:
+        - name: chart-dir
+          value: charts/demo-chart
+        - name: version
+          value: $(params.image-tag)
+        - name: repo-url
+          value: https://rparmer.github.io/tekton/
+      runAfter:
+        - build-image
+      workspaces:
+        - name: source
+          workspace: shared-data
+          subPath: source
+        - name: gh-pages
+          workspace: shared-data
+          subPath: gh-pages
     # TODO: add image scan - if necessary
     - name: update-deployment-image
       taskRef:
@@ -241,26 +261,6 @@ spec:
         - name: source
           workspace: shared-data
           subPath: source
-    - name: helm-release
-      taskRef:
-        name: helm-release
-        kind: ClusterTask
-      params:
-        - name: chart-dir
-          value: charts/demo-chart
-        - name: version
-          value: $(params.image-tag)
-        - name: repo-url
-          value: https://rparmer.github.io/tekton/
-      runAfter:
-        - update-deployment-image
-      workspaces:
-        - name: source
-          workspace: shared-data
-          subPath: source
-        - name: gh-pages
-          workspace: shared-data
-          subPath: gh-pages
     - name: copy-files-to-destination
       taskRef:
         name: move-files
