@@ -53,7 +53,7 @@ spec:
       workingDir: $(workspaces.source.path)
       script: |
         #!/usr/bin/env sh
-        helm package $(params.chart-dir) --version $(params.version)
+        helm package $(params.chart-dir) --version $(params.version) --app-version $(params.version)
     - name: index
       image: alpine/helm
       workingDir: $(workspaces.gh-pages.path)
