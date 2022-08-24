@@ -73,5 +73,5 @@ spec:
         git config --global --add safe.directory /workspace/gh-pages
         git add .
         git commit -m "$(params.release-message)"
-        git push
+        git push origin HEAD:gh-pages
   
