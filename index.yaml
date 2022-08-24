@@ -1,0 +1,14 @@
+apiVersion: v1
+entries:
+  demo-chart:
+  - apiVersion: v2
+    appVersion: v0.0.1
+    created: "2022-08-24T19:34:38.563968416Z"
+    description: A Helm chart for Kubernetes
+    digest: d3b4a32f1bbaa9fdf0c5076a3f780ac3e3ff0acdf3e24d26e782b50b05b5b657
+    name: demo-chart
+    type: application
+    urls:
+    - https://rparmer.github.io/tekton/demo-chart-v0.0.1.tgz
+    version: v0.0.1
+generated: "2022-08-24T19:34:38.562686447Z"
