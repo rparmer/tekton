@@ -266,6 +266,8 @@ spec:
         name: envsubst
         kind: ClusterTask
       params:
+        - name: chart-version
+          value: $(params.image-tag)
         - name: tpl-filepath
           value: demo/helm/release.yaml.tpl
         - name: output-filepath
