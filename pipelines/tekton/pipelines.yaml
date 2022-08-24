@@ -161,6 +161,19 @@ spec:
         - name: output
           workspace: shared-data
           subPath: destination
+    - name: clone-gh-pages
+      taskRef:
+        name: git-clone
+        kind: ClusterTask
+      params:
+        - name: url
+          value: $(params.source-git-url)
+        - name: revision
+          value: gh-pages
+      workspaces:
+        - name: output
+          workspace: shared-data
+          subPath: gh-pages
     - name: run-tests
       taskRef:
         name: run-tests
@@ -228,6 +241,27 @@ spec:
         - name: source
           workspace: shared-data
           subPath: source
+    - name: helm-release
+      taskRef:
+        name: helm-release
+        kind: ClusterTask
+      params:
+        - name: chart-dir
+          value: charts/demo-chart
+        - name: version
+          value: $(params.image-tag)
+        - name: repo-url
+          value: https://rparmer.github.io/tekton/
+      runAfter:
+        - update-deployment-image
+      workspaces:
+        - name: source
+          workspace: shared-data
+          subPath: source
+      workspaces:
+        - name: gh-pages
+          workspace: shared-data
+          subPath: gh-pages
     - name: copy-files-to-destination
       taskRef:
         name: move-files
