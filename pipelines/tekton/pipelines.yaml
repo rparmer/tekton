@@ -261,15 +261,31 @@ spec:
         - name: source
           workspace: shared-data
           subPath: source
-    - name: copy-files-to-destination
+    - name: update-helm-release-version
+      taskRef:
+        name: envsubst
+        kind: ClusterTask
+      params:
+        - name: tpl-filepath
+          value: demo/helm/release.yaml.tpl
+        - name: output-filepath
+          value: demo/helm/release.yaml
+      runAfter:
+        - update-deployment-namespace
+      workspaces:
+        - name: source
+          workspace: shared-data
+          subPath: source
+    - name: copy-kustomize-files-to-destination
       taskRef:
         name: move-files
       runAfter:
         - update-deployment-image
         - update-deployment-namespace
+        - update-helm-release-version
       params:
         - name: source-files
-          value: demo/kustomize/*
+          value: demo/*
         - name: destination-dir
           value: dev
         - name: destination-branch
