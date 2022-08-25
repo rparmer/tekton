@@ -39,6 +39,7 @@ This demo is not configured to use SOPS, so update the `pipeline-auth-sample.yam
 ```bash
 kubectl apply -f pipeline-auth-sample.yaml
 ```
+> You'll need to do this for each namespace you deploy a pipeline to
 
 ### Flux
 ```bash
