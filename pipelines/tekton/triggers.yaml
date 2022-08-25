@@ -10,7 +10,7 @@ spec:
     - name: git-revision
     - name: image-name
       default: ghcr.io/rparmer/tekton
-    - name: image-tag
+    - name: tag
       default: latest
   resourcetemplates:
     - apiVersion: tekton.dev/v1beta1
@@ -28,8 +28,8 @@ spec:
             value: $(tt.params.git-revision)
           - name: image-name
             value: $(tt.params.image-name)
-          - name: image-tag
-            value: $(tt.params.image-tag)
+          - name: tag
+            value: $(tt.params.tag)
           - name: path-to-image-context
             value: demo
         workspaces:
@@ -93,7 +93,7 @@ spec:
       default: rparmer/tekton-pipeline-environments
     - name: image-name
       default: ghcr.io/rparmer/tekton
-    - name: image-tag
+    - name: tag
       default: latest
   resourcetemplates:
     - apiVersion: tekton.dev/v1beta1
@@ -115,8 +115,8 @@ spec:
             value: $(tt.params.destination-git-full-name)
           - name: image-name
             value: $(tt.params.image-name)
-          - name: image-tag
-            value: $(tt.params.image-tag)
+          - name: tag
+            value: $(tt.params.tag)
           - name: path-to-image-context
             value: demo
         workspaces:
@@ -164,7 +164,7 @@ metadata:
   name: github-tag-binding
 spec:
   params:
-    - name: image-tag
+    - name: tag
       value: $(extensions.tag)
     - name: git-revision
       value: $(body.head_commit.id)

@@ -12,7 +12,7 @@ spec:
       type: string
     - name: image-name
       type: string
-    - name: image-tag
+    - name: tag
       type: string
       default: latest
     - name: path-to-image-context
@@ -51,7 +51,7 @@ spec:
         kind: ClusterTask
       params:
         - name: IMAGE
-          value: $(params.image-name):$(params.image-tag)
+          value: $(params.image-name):$(params.tag)
         - name: CONTEXT
           value: $(params.path-to-image-context)
         - name: DOCKERFILE
@@ -122,7 +122,7 @@ spec:
       default: main
     - name: image-name
       type: string
-    - name: image-tag
+    - name: tag
       type: string
       default: latest
     - name: path-to-image-context
@@ -189,7 +189,7 @@ spec:
         kind: ClusterTask
       params:
         - name: IMAGE
-          value: $(params.image-name):$(params.image-tag)
+          value: $(params.image-name):$(params.tag)
         - name: CONTEXT
           value: $(params.path-to-image-context)
         - name: DOCKERFILE
@@ -210,7 +210,7 @@ spec:
         - name: chart-dir
           value: charts/demo-chart
         - name: version
-          value: $(params.image-tag)
+          value: $(params.tag)
         - name: repo-url
           value: https://rparmer.github.io/tekton/
       runAfter:
@@ -235,7 +235,7 @@ spec:
             - edit
             - set
             - image
-            - $(params.image-name):$(params.image-tag)
+            - $(params.image-name):$(params.tag)
       runAfter:
         - build-image
       workspaces:
@@ -267,7 +267,7 @@ spec:
         kind: ClusterTask
       params:
         - name: chart-version
-          value: $(params.image-tag)
+          value: $(params.tag)
         - name: tpl-filepath
           value: demo/helm/release.yaml.tpl
         - name: output-filepath
@@ -291,7 +291,7 @@ spec:
         - name: destination-dir
           value: dev
         - name: destination-branch
-          value: $(params.source-git-revision)
+          value: $(params.tag)
       workspaces:
         - name: source
           workspace: shared-data
@@ -309,12 +309,12 @@ spec:
         - name: REPO_FULL_NAME
           value: $(params.destination-git-full-name)
         - name: HEAD
-          value: $(params.source-git-revision)
+          value: $(params.tag)
         - name: BASE
           value: $(params.destination-git-master-branch)
         - name: TITLE
-          value: release $(params.source-git-revision)
+          value: release $(params.tag)
         - name: BODY
-          value: release version $(params.source-git-revision) of the application
+          value: release version $(params.tag) of the application
         - name: GITHUB_TOKEN_SECRET_NAME
           value: github-api-token
