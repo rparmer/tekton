@@ -291,7 +291,7 @@ spec:
         - name: destination-dir
           value: dev
         - name: destination-branch
-          value: $(params.git-revision)
+          value: $(params.source-git-revision)
       workspaces:
         - name: source
           workspace: shared-data
@@ -309,12 +309,12 @@ spec:
         - name: REPO_FULL_NAME
           value: $(params.destination-git-full-name)
         - name: HEAD
-          value: $(params.git-revision)
+          value: $(params.source-git-revision)
         - name: BASE
           value: $(params.destination-git-master-branch)
         - name: TITLE
-          value: release $(params.git-revision)
+          value: release $(params.source-git-revision)
         - name: BODY
-          value: release version $(params.git-revision) of the application
+          value: release version $(params.source-git-revision) of the application
         - name: GITHUB_TOKEN_SECRET_NAME
           value: github-api-token
