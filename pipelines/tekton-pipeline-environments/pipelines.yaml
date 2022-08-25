@@ -70,7 +70,7 @@ spec:
         - clone-destination
       params:
         - name: path
-          value: $(params.source-git-directory)
+          value: $(params.source-git-directory)/kustomize
         - name: args
           value:
             - edit
