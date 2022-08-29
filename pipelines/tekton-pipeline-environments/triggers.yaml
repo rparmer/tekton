@@ -95,6 +95,42 @@ spec:
                     storage: 1Gi
 ---
 apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  name: flux-template
+  namespace: default
+spec:
+  params:
+    - name: severity
+    - name: message
+    - name: reason
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1beta1
+      kind: PipelineRun
+      metadata:
+        generateName: flux-run-
+      spec:
+        serviceAccountName: build-bot
+        pipelineRef:
+          name: flux
+        params:
+          - name: severity
+            value: $(tt.params.severity)
+          - name: message
+            value: $(tt.params.message)
+          - name: reason
+            value: $(tt.params.reason)
+        # workspaces:
+        #   - name: shared-data
+        #     volumeClaimTemplate:
+        #       spec:
+        #         accessModes:
+        #           - ReadWriteOnce
+        #         resources:
+        #           requests:
+        #             storage: 1Gi
+---
+apiVersion: triggers.tekton.dev/v1beta1
 kind: TriggerBinding
 metadata:
   name: github-push-binding
@@ -107,3 +143,17 @@ spec:
       value: $(body.repository.clone_url)
     - name: git-full-name
       value: $(body.repository.full_name)
+---
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerBinding
+metadata:
+  name: flux-binding
+  namespace: default
+spec:
+  params:
+    - name: severity
+      value: $(body.severity)
+    - name: message
+      value: $(body.message)
+    - name: reason
+      value: $(body.reason)

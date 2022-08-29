@@ -145,3 +145,31 @@ spec:
             name: el-tekton-pipeline-environments-listener
             port:
               name: http-listener
+---
+apiVersion: triggers.tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  name: flux-event-listener
+  namespace: default
+spec:
+  triggers:
+    - name: flux-event
+      interceptors: []
+      # bindings:
+      #   - ref: github-push-binding
+      template:
+        ref: flux
+  resources:
+    kubernetesResource:
+      spec:
+        template:
+          spec:
+            serviceAccountName: tekton-pipeline-environments-triggers-sa
+            containers:
+              - resources:
+                  requests:
+                    memory: 64Mi
+                    cpu: 250m
+                  limits:
+                    memory: 128Mi
+                    cpu: 500m

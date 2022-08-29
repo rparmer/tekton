@@ -123,3 +123,36 @@ spec:
           value: "some pr message"
         - name: GITHUB_TOKEN_SECRET_NAME
           value: github-api-token
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: flux
+  namespace: default
+spec:
+  params:
+    - name: severity
+      type: string
+    - name: message
+      type: string
+    - name: reason
+      type: string
+  # workspaces:
+  #   - name: shared-data
+    # - name: config-data
+  tasks:
+    - name: echo
+      taskSpec:
+        params:
+          - name: severity
+            type: string
+          - name: message
+            type: string
+          - name: reason
+            type: string
+        steps:
+          - image: ubuntu
+            script: |
+              echo "Severity: $(params.severity)"
+              echo "Message: $(params.message)"
+              echo "Reason: $(params.reason)"
