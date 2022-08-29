@@ -154,7 +154,7 @@ metadata:
 spec:
   triggers:
     - name: flux-event
-      interceptors: []
+      # interceptors: []
       bindings:
         - ref: flux-binding
       template:
