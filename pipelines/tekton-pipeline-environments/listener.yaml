@@ -155,8 +155,8 @@ spec:
   triggers:
     - name: flux-event
       interceptors: []
-      # bindings:
-      #   - ref: github-push-binding
+      bindings:
+        - ref: flux-binding
       template:
         ref: flux
   resources:
