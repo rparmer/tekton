@@ -155,7 +155,7 @@ metadata:
 spec:
   params:
     - name: body
-      value: $(body)
+      value: $(extensions.body)
     - name: severity
       value: $(body.severity)
     - name: message

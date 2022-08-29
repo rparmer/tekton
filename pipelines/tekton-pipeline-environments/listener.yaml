@@ -154,6 +154,15 @@ metadata:
 spec:
   triggers:
     - name: flux-event
+      interceptors:
+        - name: "marshal body"
+          ref:
+            name: cel
+          params:
+            - name: overlays
+              value:
+                - key: body
+                  expression: "body.marshalJSON()"
       # interceptors: []
       bindings:
         - ref: flux-binding
