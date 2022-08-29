@@ -133,13 +133,10 @@ spec:
   params:
     - name: severity
       type: string
-      default: na
     - name: message
       type: string
-      default: na
     - name: reason
       type: string
-      default: na
   # workspaces:
   #   - name: shared-data
     # - name: config-data
@@ -148,11 +145,11 @@ spec:
       taskSpec:
         params:
           - name: severity
-            type: string
+            value: $(params.severity)
           - name: message
-            type: string
+            value: $(params.message)
           - name: reason
-            type: string
+            value: $(params.reason)
         steps:
           - image: ubuntu
             script: |
