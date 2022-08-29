@@ -131,6 +131,7 @@ metadata:
   namespace: default
 spec:
   params:
+    - name: body
     - name: severity
       type: string
     - name: message
@@ -143,6 +144,8 @@ spec:
   tasks:
     - name: echo
       params:
+        - name: body
+          value: $(params.body)
         - name: severity
           value: $(params.severity)
         - name: message
@@ -151,6 +154,7 @@ spec:
           value: $(params.reason)
       taskSpec:
         params:
+          - name: body
           - name: severity
             type: string
           - name: message
@@ -160,6 +164,7 @@ spec:
         steps:
           - image: ubuntu
             script: |
+              echo "Body: $(params.body)"
               echo "Severity: $(params.severity)"
               echo "Message: $(params.message)"
               echo "Reason: $(params.reason)"

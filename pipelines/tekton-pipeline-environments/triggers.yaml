@@ -101,6 +101,7 @@ metadata:
   namespace: default
 spec:
   params:
+    - name: body
     - name: severity
     - name: message
     - name: reason
@@ -114,6 +115,8 @@ spec:
         pipelineRef:
           name: flux
         params:
+          - name: body
+            value: $(tt.params.body)
           - name: severity
             value: $(tt.params.severity)
           - name: message
@@ -151,6 +154,8 @@ metadata:
   namespace: default
 spec:
   params:
+    - name: body
+      value: $(body)
     - name: severity
       value: $(body.severity)
     - name: message
