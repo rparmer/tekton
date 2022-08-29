@@ -142,14 +142,21 @@ spec:
     # - name: config-data
   tasks:
     - name: echo
+      params:
+        - name: severity
+          value: $(params.severity)
+        - name: message
+          value: $(params.message)
+        - name: reason
+          value: $(params.reason)
       taskSpec:
         params:
           - name: severity
-            value: $(params.severity)
+            type: string
           - name: message
-            value: $(params.message)
+            type: string
           - name: reason
-            value: $(params.reason)
+            type: string
         steps:
           - image: ubuntu
             script: |
