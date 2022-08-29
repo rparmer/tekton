@@ -173,3 +173,27 @@ spec:
                   limits:
                     memory: 128Mi
                     cpu: 500m
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: flux-el
+  namespace: default
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+spec:
+  tls:
+  - hosts:
+    - flux-el.russparmer.dev
+    secretName: flux-el-tls
+  rules:
+  - host: flux-el.russparmer.dev
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: el-flux-event-listener
+            port:
+              name: http-listener
