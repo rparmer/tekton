@@ -133,10 +133,13 @@ spec:
   params:
     - name: severity
       type: string
+      default: na
     - name: message
       type: string
+      default: na
     - name: reason
       type: string
+      default: na
   # workspaces:
   #   - name: shared-data
     # - name: config-data
