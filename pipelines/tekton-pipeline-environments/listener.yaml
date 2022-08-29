@@ -158,7 +158,7 @@ spec:
       bindings:
         - ref: flux-binding
       template:
-        ref: flux
+        ref: flux-template
   resources:
     kubernetesResource:
       spec:
