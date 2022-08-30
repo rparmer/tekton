@@ -64,7 +64,7 @@ spec:
       spec:
         template:
           spec:
-            serviceAccountName: weave-pipeline-environment-promotion-sa
+            serviceAccountName: weave-pipeline-environment-promotion-trigger-sa
             containers:
               - resources:
                   requests:
