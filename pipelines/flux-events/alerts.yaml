@@ -1,11 +1,11 @@
 apiVersion: notification.toolkit.fluxcd.io/v1beta1
 kind: Provider
 metadata:
-  name: el-weave-pipeline-environment-promotion
+  name: el-wego-pipeline-environment-promotion
   namespace: flux-system
 spec:
   type: generic
-  address: http://el-weave-pipeline-environment-promotion.flux-system.svc:8080
+  address: http://el-wego-pipeline-environment-promotion.flux-system.svc:8080
 ---
 apiVersion: notification.toolkit.fluxcd.io/v1beta1
 kind: Alert
@@ -14,7 +14,7 @@ metadata:
   namespace: flux-system
 spec:
   providerRef: 
-    name: el-weave-pipeline-environment-promotion
+    name: el-wego-pipeline-environment-promotion
   eventSeverity: info
   eventSources:
     # - kind: Kustomization

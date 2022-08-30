@@ -2,7 +2,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: weave-pipeline-environment-promotion
+  name: wego-pipeline-environment-promotion
   namespace: flux-system
 spec:
   params:
