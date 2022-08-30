@@ -56,9 +56,9 @@ spec:
                   expression: "body.marshalJSON()"
       # interceptors: []
       bindings:
-        - ref: flux-binding
+        - ref: weave-pipeline-environment-promotion-binding
       template:
-        ref: flux-template
+        ref: weave-pipeline-environment-promotion-template
   resources:
     kubernetesResource:
       spec:

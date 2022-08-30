@@ -2,7 +2,7 @@
 apiVersion: triggers.tekton.dev/v1beta1
 kind: TriggerTemplate
 metadata:
-  name: flux-template
+  name: weave-pipeline-environment-promotion-template
   namespace: flux-system
 spec:
   params:
@@ -15,11 +15,11 @@ spec:
     - apiVersion: tekton.dev/v1beta1
       kind: PipelineRun
       metadata:
-        generateName: flux-run-
+        generateName: weave-pipeline-environment-promotion-run-
       spec:
         serviceAccountName: build-bot
         pipelineRef:
-          name: flux
+          name: weave-pipeline-environment-promotion
         params:
           - name: body
             value: $(tt.params.body)
@@ -44,7 +44,7 @@ spec:
 apiVersion: triggers.tekton.dev/v1beta1
 kind: TriggerBinding
 metadata:
-  name: flux-binding
+  name: weave-pipeline-environment-promotion-binding
   namespace: flux-system
 spec:
   params:
