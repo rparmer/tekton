@@ -38,7 +38,7 @@ metadata:
   namespace: flux-system
 spec:
   triggers:
-    - name: flux-notification-event
+    - name: dev-deployment
       interceptors:
         - name: "ignore failed releases"
           ref:
@@ -46,17 +46,44 @@ spec:
           params:
             - name: filter
               value: "body.severity != 'error'"
-        - name: "marshal body"
+        - name: "only listen to dev events"
           ref:
             name: cel
           params:
-            - name: overlays
-              value:
-                - key: body
-                  expression: "body.marshalJSON()"
-      # interceptors: []
+            - name: filter
+              value: "body.involvedObject.namespace == 'dev'"
       bindings:
         - ref: wego-pipeline-environment-promotion-binding
+        - name: source-git-directory
+          value: dev
+        - name: destination-git-directory
+          value: staging
+        - name: promotion-namespace
+          value: staging
+      template:
+        ref: wego-pipeline-environment-promotion-template
+    - name: staging-deployment
+      interceptors:
+        - name: "ignore failed releases"
+          ref:
+            name: cel
+          params:
+            - name: filter
+              value: "body.severity != 'error'"
+        - name: "only listen to staging events"
+          ref:
+            name: cel
+          params:
+            - name: filter
+              value: "body.involvedObject.namespace == 'staging'"
+      bindings:
+        - ref: wego-pipeline-environment-promotion-binding
+        - name: source-git-directory
+          value: staging
+        - name: destination-git-directory
+          value: prod
+        - name: promotion-namespace
+          value: prod
       template:
         ref: wego-pipeline-environment-promotion-template
   resources:

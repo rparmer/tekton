@@ -6,47 +6,163 @@ metadata:
   namespace: flux-system
 spec:
   params:
-    - name: body
-    - name: severity
-      type: string
-    - name: message
-      type: string
-    - name: reason
-      type: string
+    # - name: body
+    # - name: severity
+    #   type: string
+    # - name: message
+    #   type: string
+    # - name: reason
+    #   type: string
     - name: revision
       type: string
+    - name: source-git-url
+      type: string
+    - name: source-git-revision
+      type: string
+      default: main
+    - name: source-git-directory
+      type: string
+      default: ""
+    - name: source-git-files
+      type: array
+      default:
+        - "*"
+    - name: destination-git-url
+      type: string
+    - name: destination-git-full-name
+      type: string
+    - name: destination-git-directory
+      type: string
+      default: ""
+    - name: destination-git-revision
+      type: string
+      default: main
+    - name: promotion-namespace
+      type: string
+  workspaces:
+    - name: shared-data
+    # - name: config-data
+  tasks:
+    - name: clone-source
+      taskRef:
+        name: git-clone
+        kind: ClusterTask
+      params:
+        - name: url
+          value: $(params.source-git-url)
+        - name: revision
+          value: $(params.source-git-revision)
+      workspaces:
+        - name: output
+          workspace: shared-data
+          subPath: source 
+    - name: clone-destination
+      taskRef:
+        name: git-clone
+        kind: ClusterTask
+      params:
+        - name: url
+          value: $(params.destination-git-url)
+        - name: revision
+          value: $(params.destination-git-revision)
+      workspaces:
+        - name: output
+          workspace: shared-data
+          subPath: destination
+    - name: update-namespace
+      taskRef:
+        name: kustomize
+        kind: ClusterTask
+      runAfter:
+        - clone-source
+        - clone-destination
+      params:
+        - name: path
+          value: $(params.source-git-directory)/kustomize
+        - name: args
+          value:
+            - edit
+            - set
+            - namespace
+            - $(params.promotion-namespace)
+      workspaces:
+        - name: source
+          workspace: shared-data
+          subPath: source
+    - name: copy-files-to-destination
+      taskRef:
+        name: move-files
+      runAfter:
+        - clone-source
+        - clone-destination
+        - update-deployment-namespace
+      params:
+        - name: source-files
+          value: ["$(params.source-git-files[*])"]
+        - name: source-dir
+          value: $(params.source-git-directory)
+        - name: destination-dir
+          value: $(params.destination-git-directory)
+        - name: destination-branch
+          value: $(params.revision)
+      workspaces:
+        - name: source
+          workspace: shared-data
+          subPath: source
+        - name: destination
+          workspace: shared-data
+          subPath: destination
+    - name: open-pr
+      taskRef:
+        name: github-open-pr
+        kind: ClusterTask
+      runAfter:
+        - copy-files-to-destination
+      params:
+        - name: REPO_FULL_NAME
+          value: $(params.destination-git-full-name)
+        - name: HEAD
+          value: $(params.revision)
+        - name: BASE
+          value: $(params.destination-git-revision)
+        - name: TITLE
+          value: release $(params.revision)
+        - name: BODY
+          value: release $(params.revision)
+        - name: GITHUB_TOKEN_SECRET_NAME
+          value: github-api-token
   # workspaces:
   #   - name: shared-data
     # - name: config-data
-  tasks:
-    - name: echo
-      params:
-        - name: body
-          value: $(params.body)
-        - name: severity
-          value: $(params.severity)
-        - name: message
-          value: $(params.message)
-        - name: reason
-          value: $(params.reason)
-        - name: revision
-          value: $(params.revision)
-      taskSpec:
-        params:
-          - name: body
-          - name: severity
-            type: string
-          - name: message
-            type: string
-          - name: reason
-            type: string
-          - name: revision
-            type: string
-        steps:
-          - image: ubuntu
-            script: |
-              echo "Body: $(params.body)"
-              echo "Severity: $(params.severity)"
-              echo "Message: $(params.message)"
-              echo "Reason: $(params.reason)"
-              echo "Revision: $(params.revision)"
+  # tasks:
+  #   - name: echo
+  #     params:
+  #       - name: body
+  #         value: $(params.body)
+  #       - name: severity
+  #         value: $(params.severity)
+  #       - name: message
+  #         value: $(params.message)
+  #       - name: reason
+  #         value: $(params.reason)
+  #       - name: revision
+  #         value: $(params.revision)
+  #     taskSpec:
+  #       params:
+  #         - name: body
+  #         - name: severity
+  #           type: string
+  #         - name: message
+  #           type: string
+  #         - name: reason
+  #           type: string
+  #         - name: revision
+  #           type: string
+  #       steps:
+  #         - image: ubuntu
+  #           script: |
+  #             echo "Body: $(params.body)"
+  #             echo "Severity: $(params.severity)"
+  #             echo "Message: $(params.message)"
+  #             echo "Reason: $(params.reason)"
+  #             echo "Revision: $(params.revision)"

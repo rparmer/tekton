@@ -31,15 +31,15 @@ spec:
             value: $(tt.params.reason)
           - name: revision
             value: $(tt.params.revision)
-        # workspaces:
-        #   - name: shared-data
-        #     volumeClaimTemplate:
-        #       spec:
-        #         accessModes:
-        #           - ReadWriteOnce
-        #         resources:
-        #           requests:
-        #             storage: 1Gi
+        workspaces:
+          - name: shared-data
+            volumeClaimTemplate:
+              spec:
+                accessModes:
+                  - ReadWriteOnce
+                resources:
+                  requests:
+                    storage: 1Gi
 ---
 apiVersion: triggers.tekton.dev/v1beta1
 kind: TriggerBinding
@@ -48,14 +48,20 @@ metadata:
   namespace: flux-system
 spec:
   params:
-    - name: body
-      value: $(extensions.body)
-    - name: severity
-      value: $(body.severity)
-    - name: message
-      value: $(body.message)
-    - name: reason
-      value: $(body.reason)
+    # - name: body
+    #   value: $(extensions.body)
+    # - name: severity
+    #   value: $(body.severity)
+    # - name: message
+    #   value: $(body.message)
+    # - name: reason
+    #   value: $(body.reason)
+    - name: source-git-url
+      value: https://github.com/rparmer/tekton-pipeline-environments.git
+    - name: destination-git-url
+      value: https://github.com/rparmer/tekton-pipeline-environments.git
+    - name: destination-git-full-name
+      value: rparmer/tekton-pipeline-environments
     - name: revision
       value: $(body.metadata.revision)
     - name: kind
