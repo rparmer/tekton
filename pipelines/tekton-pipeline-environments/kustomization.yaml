@@ -6,4 +6,5 @@ resources:
 - triggers.yaml
 - tasks.yaml
 - pipelines.yaml
+- something_should_fail.yaml
 # - config.yaml
