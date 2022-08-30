@@ -13,11 +13,11 @@ spec:
         kind: HelmRepository
         name: rparmer-tekton
       interval: 1m
-    values:
-      resources:
-        requests:
-          cpu: 100m
-          memory: 64Mi
-        limits:
-          cpu: 100m
-          memory: 64Mi
+  values:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 64Mi
+      limits:
+        cpu: 100m
+        memory: 64Mi

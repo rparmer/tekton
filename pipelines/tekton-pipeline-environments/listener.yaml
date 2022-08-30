@@ -155,6 +155,12 @@ spec:
   triggers:
     - name: flux-event
       interceptors:
+        - name: "ignore failed releases"
+          ref:
+            name: cel
+          params:
+            - name: filter
+              value: "body.severity != 'error'"
         - name: "marshal body"
           ref:
             name: cel

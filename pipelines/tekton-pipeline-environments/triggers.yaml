@@ -162,3 +162,11 @@ spec:
       value: $(body.message)
     - name: reason
       value: $(body.reason)
+    - name: revision
+      value: $(body.metadata.revision)
+    - name: kind
+      value: $(body.involvedObject.kind)
+    - name: name
+      value: $(body.involvedObject.name)
+    - name: namespace
+      value: $(body.involvedObject.namespace)

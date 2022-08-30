@@ -138,6 +138,8 @@ spec:
       type: string
     - name: reason
       type: string
+    - name: revision
+      type: string
   # workspaces:
   #   - name: shared-data
     # - name: config-data
@@ -152,6 +154,8 @@ spec:
           value: $(params.message)
         - name: reason
           value: $(params.reason)
+        - name: revision
+          value: $(params.revision)
       taskSpec:
         params:
           - name: body
@@ -161,6 +165,8 @@ spec:
             type: string
           - name: reason
             type: string
+          - name: revision
+            type: string
         steps:
           - image: ubuntu
             script: |
@@ -168,3 +174,4 @@ spec:
               echo "Severity: $(params.severity)"
               echo "Message: $(params.message)"
               echo "Reason: $(params.reason)"
+              echo "Revision: $(params.revision)"
