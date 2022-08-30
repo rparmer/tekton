@@ -2,8 +2,18 @@ apiVersion: v1
 entries:
   demo-chart:
   - apiVersion: v2
+    appVersion: v0.0.10
+    created: "2022-08-30T19:12:16.942725253Z"
+    description: A Helm chart for Kubernetes
+    digest: a7934b0332eb9354e3ba70b9c435e3ea801b1642cd3f85ca8817caa1ef7aa64b
+    name: demo-chart
+    type: application
+    urls:
+    - https://rparmer.github.io/tekton/demo-chart-v0.0.10.tgz
+    version: v0.0.10
+  - apiVersion: v2
     appVersion: v0.0.9
-    created: "2022-08-30T17:54:49.198644528Z"
+    created: "2022-08-30T19:12:16.952463754Z"
     description: A Helm chart for Kubernetes
     digest: 6c43591d4a8ddd0b9aabfac4141a1086b8ea4af579e675dc0529f2927dbf2cdf
     name: demo-chart
@@ -13,7 +23,7 @@ entries:
     version: v0.0.9
   - apiVersion: v2
     appVersion: v0.0.8
-    created: "2022-08-30T17:54:49.197979595Z"
+    created: "2022-08-30T19:12:16.95119594Z"
     description: A Helm chart for Kubernetes
     digest: b512ee31f428c85e3e8a85b22486a66059155aef202e04449f91a60255473e80
     name: demo-chart
@@ -23,7 +33,7 @@ entries:
     version: v0.0.8
   - apiVersion: v2
     appVersion: v0.0.7
-    created: "2022-08-30T17:54:49.197400071Z"
+    created: "2022-08-30T19:12:16.950025917Z"
     description: A Helm chart for Kubernetes
     digest: 914c8f0f56df57876abdc5dc6f51194e4d695927c8436ed4641920cc27720135
     name: demo-chart
@@ -33,7 +43,7 @@ entries:
     version: v0.0.7
   - apiVersion: v2
     appVersion: v0.0.6
-    created: "2022-08-30T17:54:49.196765844Z"
+    created: "2022-08-30T19:12:16.948770533Z"
     description: A Helm chart for Kubernetes
     digest: 3b1e8dc924936266c36e19bc280a4699055aedf5b6235a6c02d6881c3c57d07b
     name: demo-chart
@@ -43,7 +53,7 @@ entries:
     version: v0.0.6
   - apiVersion: v2
     appVersion: v0.0.5
-    created: "2022-08-30T17:54:49.196146171Z"
+    created: "2022-08-30T19:12:16.947643452Z"
     description: A Helm chart for Kubernetes
     digest: d8b7f6ba572253c229c470708d6001272b81dcfd02c40c9c0c16d9a6a802ad56
     name: demo-chart
@@ -53,7 +63,7 @@ entries:
     version: v0.0.5
   - apiVersion: v2
     appVersion: v0.0.4
-    created: "2022-08-30T17:54:49.195414365Z"
+    created: "2022-08-30T19:12:16.946461994Z"
     description: A Helm chart for Kubernetes
     digest: 15463e02e8034d926d84459689b05900432ea658388305c4de0133061b4de67d
     name: demo-chart
@@ -63,7 +73,7 @@ entries:
     version: v0.0.4
   - apiVersion: v2
     appVersion: v0.0.3
-    created: "2022-08-30T17:54:49.194838434Z"
+    created: "2022-08-30T19:12:16.945222502Z"
     description: A Helm chart for Kubernetes
     digest: d002a6b863a4650337afca6b1538c8de70b2d267195528d84846484adf62d00e
     name: demo-chart
@@ -73,7 +83,7 @@ entries:
     version: v0.0.3
   - apiVersion: v2
     appVersion: v0.0.2
-    created: "2022-08-30T17:54:49.194334504Z"
+    created: "2022-08-30T19:12:16.94403483Z"
     description: A Helm chart for Kubernetes
     digest: 42058f3d9229cf541ace860963a923767266ce63e0165fcc89f04ec4cebe6802
     name: demo-chart
@@ -83,7 +93,7 @@ entries:
     version: v0.0.2
   - apiVersion: v2
     appVersion: v0.0.1
-    created: "2022-08-30T17:54:49.193681229Z"
+    created: "2022-08-30T19:12:16.941116256Z"
     description: A Helm chart for Kubernetes
     digest: d3b4a32f1bbaa9fdf0c5076a3f780ac3e3ff0acdf3e24d26e782b50b05b5b657
     name: demo-chart
@@ -91,4 +101,4 @@ entries:
     urls:
     - https://rparmer.github.io/tekton/demo-chart-v0.0.1.tgz
     version: v0.0.1
-generated: "2022-08-30T17:54:49.192813625Z"
+generated: "2022-08-30T19:12:16.938559256Z"
