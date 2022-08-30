@@ -95,48 +95,6 @@ spec:
                     storage: 1Gi
 ---
 apiVersion: triggers.tekton.dev/v1beta1
-kind: TriggerTemplate
-metadata:
-  name: flux-template
-  namespace: default
-spec:
-  params:
-    - name: body
-    - name: severity
-    - name: message
-    - name: reason
-    - name: revision
-  resourcetemplates:
-    - apiVersion: tekton.dev/v1beta1
-      kind: PipelineRun
-      metadata:
-        generateName: flux-run-
-      spec:
-        serviceAccountName: build-bot
-        pipelineRef:
-          name: flux
-        params:
-          - name: body
-            value: $(tt.params.body)
-          - name: severity
-            value: $(tt.params.severity)
-          - name: message
-            value: $(tt.params.message)
-          - name: reason
-            value: $(tt.params.reason)
-          - name: revision
-            value: $(tt.params.revision)
-        # workspaces:
-        #   - name: shared-data
-        #     volumeClaimTemplate:
-        #       spec:
-        #         accessModes:
-        #           - ReadWriteOnce
-        #         resources:
-        #           requests:
-        #             storage: 1Gi
----
-apiVersion: triggers.tekton.dev/v1beta1
 kind: TriggerBinding
 metadata:
   name: github-push-binding
@@ -149,27 +107,3 @@ spec:
       value: $(body.repository.clone_url)
     - name: git-full-name
       value: $(body.repository.full_name)
----
-apiVersion: triggers.tekton.dev/v1beta1
-kind: TriggerBinding
-metadata:
-  name: flux-binding
-  namespace: default
-spec:
-  params:
-    - name: body
-      value: $(extensions.body)
-    - name: severity
-      value: $(body.severity)
-    - name: message
-      value: $(body.message)
-    - name: reason
-      value: $(body.reason)
-    - name: revision
-      value: $(body.metadata.revision)
-    - name: kind
-      value: $(body.involvedObject.kind)
-    - name: name
-      value: $(body.involvedObject.name)
-    - name: namespace
-      value: $(body.involvedObject.namespace)

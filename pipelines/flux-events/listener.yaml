@@ -1,0 +1,75 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: weave-pipeline-environment-promotion-trigger-sa
+  namespace: flux-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: weave-pipeline-environment-promotion-trigger-binding
+  namespace: flux-system
+subjects:
+- kind: ServiceAccount
+  name: weave-pipeline-environment-promotion-trigger-sa
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: tekton-triggers-eventlistener-roles
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: weave-pipeline-environment-promotion-trigger-clusterbinding
+subjects:
+- kind: ServiceAccount
+  name: weave-pipeline-environment-promotion-trigger-sa
+  namespace: flux-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: tekton-triggers-eventlistener-clusterroles
+---
+apiVersion: triggers.tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  name: weave-pipeline-environment-promotion
+  namespace: flux-system
+spec:
+  triggers:
+    - name: flux-notification-event
+      interceptors:
+        - name: "ignore failed releases"
+          ref:
+            name: cel
+          params:
+            - name: filter
+              value: "body.severity != 'error'"
+        - name: "marshal body"
+          ref:
+            name: cel
+          params:
+            - name: overlays
+              value:
+                - key: body
+                  expression: "body.marshalJSON()"
+      # interceptors: []
+      bindings:
+        - ref: flux-binding
+      template:
+        ref: flux-template
+  resources:
+    kubernetesResource:
+      spec:
+        template:
+          spec:
+            serviceAccountName: weave-pipeline-environment-promotion-sa
+            containers:
+              - resources:
+                  requests:
+                    memory: 64Mi
+                    cpu: 250m
+                  limits:
+                    memory: 64Mi
+                    cpu: 250m

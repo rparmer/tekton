@@ -1,0 +1,44 @@
+apiVersion: notification.toolkit.fluxcd.io/v1beta1
+kind: Provider
+metadata:
+  name: el-weave-pipeline-environment-promotion
+  namespace: flux-system
+spec:
+  type: generic
+  address: http://el-weave-pipeline-environment-promotion.flux-system.svc:8080
+---
+apiVersion: notification.toolkit.fluxcd.io/v1beta1
+kind: Alert
+metadata:
+  name: tekton-pipelines-alerts
+  namespace: flux-system
+spec:
+  providerRef: 
+    name: el-weave-pipeline-environment-promotion
+  eventSeverity: info
+  eventSources:
+    # - kind: Kustomization
+    #   namespace: dev
+    #   name: demo
+    # - kind: Kustomization
+    #   namespace: staging
+    #   name: demo
+    # - kind: Kustomization
+    #   namespace: prod
+    #   name: demo
+    # - kind: Kustomization
+    #   namespace: flux-system
+    #   name: tekton-pipeline-environments
+    - kind: HelmRelease
+      namespace: dev
+      name: demo
+    - kind: HelmRelease
+      namespace: staging
+      name: demo
+    - kind: HelmRelease
+      namespace: prod
+      name: demo
+  exclusionList:
+    - ".*upgrade.*has.*started"
+    - ".*not.*ready"
+    - "^Dependencies.*"
