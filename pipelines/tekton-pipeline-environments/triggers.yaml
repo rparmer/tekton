@@ -105,6 +105,7 @@ spec:
     - name: severity
     - name: message
     - name: reason
+    - name: revision
   resourcetemplates:
     - apiVersion: tekton.dev/v1beta1
       kind: PipelineRun
@@ -123,6 +124,8 @@ spec:
             value: $(tt.params.message)
           - name: reason
             value: $(tt.params.reason)
+          - name: revision
+            value: $(tt.params.revision)
         # workspaces:
         #   - name: shared-data
         #     volumeClaimTemplate:
