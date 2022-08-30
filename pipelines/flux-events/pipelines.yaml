@@ -2,8 +2,8 @@
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: flux
-  namespace: default
+  name: weave-pipeline-environment-promotion
+  namespace: flux-system
 spec:
   params:
     - name: body
