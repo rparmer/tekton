@@ -126,10 +126,10 @@ spec:
     #         - set
     #         - namespace
     #         - $(params.promotion-namespace)
-      workspaces:
-        - name: source
-          workspace: shared-data
-          subPath: source
+    #   workspaces:
+    #     - name: source
+    #       workspace: shared-data
+    #       subPath: source
     - name: copy-files-to-destination
       taskRef:
         name: move-files
