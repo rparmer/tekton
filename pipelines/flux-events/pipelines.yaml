@@ -85,7 +85,7 @@ spec:
       workspaces:
         - name: source
           workspace: shared-data
-          subPath: destination
+          subPath: source
     - name: set-chart-namespace
       taskRef:
         name: yq
@@ -102,6 +102,22 @@ spec:
         - name: source
           workspace: shared-data
           subPath: source
+    - name: set-chart-repository-namespace
+      taskRef:
+        name: yq
+        kind: ClusterTask
+      runAfter:
+        - set-chart-namespace
+      params:
+        - name: args
+          value:
+            - '.metadata.namespace="$(params.promotion-namespace)"'
+            - -i
+            - ./$(params.source-git-directory)/helm/repository.yaml
+      workspaces:
+        - name: source
+          workspace: shared-data
+          subPath: source
     - name: update-namespace
       taskRef:
         name: kustomize
@@ -111,7 +127,7 @@ spec:
         - clone-destination
       params:
         - name: path
-          value: $(params.destination-git-directory)/kustomize
+          value: $(params.source-git-directory)/kustomize
         - name: args
           value:
             - edit
@@ -128,6 +144,7 @@ spec:
       runAfter:
         - set-chart-version
         - set-chart-namespace
+        - set-chart-repository-namespace
         - update-namespace
       params:
         - name: source-files
