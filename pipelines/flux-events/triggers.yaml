@@ -54,14 +54,6 @@ metadata:
   namespace: flux-system
 spec:
   params:
-    # - name: body
-    #   value: $(extensions.body)
-    # - name: severity
-    #   value: $(body.severity)
-    # - name: message
-    #   value: $(body.message)
-    # - name: reason
-    #   value: $(body.reason)
     - name: source-git-url
       value: https://github.com/rparmer/tekton-pipeline-environments.git
     - name: destination-git-url

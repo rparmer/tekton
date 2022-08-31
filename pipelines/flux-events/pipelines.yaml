@@ -6,13 +6,6 @@ metadata:
   namespace: flux-system
 spec:
   params:
-    # - name: body
-    # - name: severity
-    #   type: string
-    # - name: message
-    #   type: string
-    # - name: reason
-    #   type: string
     - name: revision
       type: string
     - name: source-git-url
@@ -41,7 +34,6 @@ spec:
       type: string
   workspaces:
     - name: shared-data
-    # - name: config-data
   tasks:
     - name: clone-source
       taskRef:
@@ -181,38 +173,3 @@ spec:
           value: release $(params.revision) to $(params.promotion-namespace)
         - name: GITHUB_TOKEN_SECRET_NAME
           value: github-api-token
-  # workspaces:
-  #   - name: shared-data
-    # - name: config-data
-  # tasks:
-  #   - name: echo
-  #     params:
-  #       - name: body
-  #         value: $(params.body)
-  #       - name: severity
-  #         value: $(params.severity)
-  #       - name: message
-  #         value: $(params.message)
-  #       - name: reason
-  #         value: $(params.reason)
-  #       - name: revision
-  #         value: $(params.revision)
-  #     taskSpec:
-  #       params:
-  #         - name: body
-  #         - name: severity
-  #           type: string
-  #         - name: message
-  #           type: string
-  #         - name: reason
-  #           type: string
-  #         - name: revision
-  #           type: string
-  #       steps:
-  #         - image: ubuntu
-  #           script: |
-  #             echo "Body: $(params.body)"
-  #             echo "Severity: $(params.severity)"
-  #             echo "Message: $(params.message)"
-  #             echo "Reason: $(params.reason)"
-  #             echo "Revision: $(params.revision)"

@@ -8,12 +8,11 @@ spec:
   workspaces:
     - name: source
     - name: destination
-    # - name: config
   params:
     - name: source-files
       type: array
-      # default:
-      #   - "*"
+      default:
+        - "*"
     - name: source-dir
       type: string
       default: ""
