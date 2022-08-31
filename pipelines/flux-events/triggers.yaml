@@ -6,11 +6,20 @@ metadata:
   namespace: flux-system
 spec:
   params:
-    - name: body
-    - name: severity
-    - name: message
-    - name: reason
     - name: revision
+      type: string
+    - name: source-git-url
+      type: string
+    - name: source-git-directory
+      type: string
+    - name: destination-git-url
+      type: string
+    - name: destination-git-full-name
+      type: string
+    - name: destination-git-directory
+      type: string
+    - name: promotion-namespace
+      type: string
   resourcetemplates:
     - apiVersion: tekton.dev/v1beta1
       kind: PipelineRun
@@ -21,16 +30,20 @@ spec:
         pipelineRef:
           name: wego-pipeline-environment-promotion
         params:
-          - name: body
-            value: $(tt.params.body)
-          - name: severity
-            value: $(tt.params.severity)
-          - name: message
-            value: $(tt.params.message)
-          - name: reason
-            value: $(tt.params.reason)
           - name: revision
             value: $(tt.params.revision)
+          - name: source-git-url
+            value: $(tt.params.source-git-url)
+          - name: source-git-directory
+            value: $(tt.params.source-git-directory)
+          - name: destination-git-url
+            value: $(tt.params.destination-git-url)
+          - name: destination-git-full-name
+            value: $(tt.params.destination-git-full-name)
+          - name: destination-git-directory
+            value: $(tt.params.destination-git-directory)
+          - name: promotion-namespace
+            value: $(tt.params.promotion-namespace)
         workspaces:
           - name: shared-data
             volumeClaimTemplate:
