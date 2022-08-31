@@ -55,9 +55,9 @@ spec:
       bindings:
         - ref: wego-pipeline-environment-promotion-binding
         - name: source-git-directory
-          value: dev
+          value: dev/helm
         - name: destination-git-directory
-          value: staging
+          value: staging/helm
         - name: promotion-namespace
           value: staging
       template:
@@ -79,9 +79,9 @@ spec:
       bindings:
         - ref: wego-pipeline-environment-promotion-binding
         - name: source-git-directory
-          value: staging
+          value: staging/helm
         - name: destination-git-directory
-          value: prod
+          value: prod/helm
         - name: promotion-namespace
           value: prod
       template:

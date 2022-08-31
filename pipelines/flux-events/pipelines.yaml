@@ -73,7 +73,7 @@ spec:
           value:
             - '.spec.chart.spec.version="$(params.revision)"'
             - -i
-            - ./$(params.source-git-directory)/helm/release.yaml
+            - ./$(params.source-git-directory)/release.yaml
       workspaces:
         - name: source
           workspace: shared-data
@@ -89,7 +89,7 @@ spec:
           value:
             - '.metadata.namespace="$(params.promotion-namespace)"'
             - -i
-            - ./$(params.source-git-directory)/helm/release.yaml
+            - ./$(params.source-git-directory)/release.yaml
       workspaces:
         - name: source
           workspace: shared-data
@@ -105,27 +105,27 @@ spec:
           value:
             - '.metadata.namespace="$(params.promotion-namespace)"'
             - -i
-            - ./$(params.source-git-directory)/helm/repository.yaml
+            - ./$(params.source-git-directory)/repository.yaml
       workspaces:
         - name: source
           workspace: shared-data
           subPath: source
-    - name: update-namespace
-      taskRef:
-        name: kustomize
-        kind: ClusterTask
-      runAfter:
-        - clone-source
-        - clone-destination
-      params:
-        - name: path
-          value: $(params.source-git-directory)/kustomize
-        - name: args
-          value:
-            - edit
-            - set
-            - namespace
-            - $(params.promotion-namespace)
+    # - name: update-namespace
+    #   taskRef:
+    #     name: kustomize
+    #     kind: ClusterTask
+    #   runAfter:
+    #     - clone-source
+    #     - clone-destination
+    #   params:
+    #     - name: path
+    #       value: $(params.source-git-directory)/kustomize
+    #     - name: args
+    #       value:
+    #         - edit
+    #         - set
+    #         - namespace
+    #         - $(params.promotion-namespace)
       workspaces:
         - name: source
           workspace: shared-data
@@ -137,7 +137,7 @@ spec:
         - set-chart-version
         - set-chart-namespace
         - set-chart-repository-namespace
-        - update-namespace
+        # - update-namespace
       params:
         - name: source-files
           value: ["$(params.source-git-files[*])"]
