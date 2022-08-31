@@ -7,19 +7,12 @@ metadata:
 spec:
   params:
     - name: revision
-      type: string
     - name: source-git-url
-      type: string
     - name: source-git-directory
-      type: string
     - name: destination-git-url
-      type: string
     - name: destination-git-full-name
-      type: string
     - name: destination-git-directory
-      type: string
     - name: promotion-namespace
-      type: string
   resourcetemplates:
     - apiVersion: tekton.dev/v1beta1
       kind: PipelineRun
