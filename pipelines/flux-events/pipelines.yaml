@@ -69,33 +69,12 @@ spec:
         - name: output
           workspace: shared-data
           subPath: destination
-    - name: update-namespace
-      taskRef:
-        name: kustomize
-        kind: ClusterTask
-      runAfter:
-        - clone-source
-        - clone-destination
-      params:
-        - name: path
-          value: $(params.source-git-directory)/kustomize
-        - name: args
-          value:
-            - edit
-            - set
-            - namespace
-            - $(params.promotion-namespace)
-      workspaces:
-        - name: source
-          workspace: shared-data
-          subPath: source
     - name: copy-files-to-destination
       taskRef:
         name: move-files
       runAfter:
         - clone-source
         - clone-destination
-        - update-namespace
       params:
         - name: source-files
           value: ["$(params.source-git-files[*])"]
@@ -112,6 +91,59 @@ spec:
         - name: destination
           workspace: shared-data
           subPath: destination
+    - name: set-chart-version
+      taskRef:
+        name: yq
+        kind: ClusterTask
+      runAfter:
+        - copy-files-to-destination
+      params:
+        - name: args
+          value:
+            - eval
+            - '.spec.chart.spec.version=env($(params.revision))'
+            - -i
+            - ./$(params.destination-git-directory)/release.yaml
+      workspaces:
+        - name: source
+          workspace: shared-data
+          subPath: destination
+    - name: set-chart-namespace
+      taskRef:
+        name: yq
+        kind: ClusterTask
+      runAfter:
+        - set-chart-version
+      params:
+        - name: args
+          value:
+            - eval
+            - '.metadata.namespace=env($(params.promotion-namespace))'
+            - -i
+            - ./$(params.destination-git-directory)/release.yaml
+      workspaces:
+        - name: source
+          workspace: shared-data
+          subPath: destination
+    - name: update-namespace
+      taskRef:
+        name: kustomize
+        kind: ClusterTask
+      runAfter:
+        - copy-files-to-destination
+      params:
+        - name: path
+          value: $(params.destination-git-directory)/kustomize
+        - name: args
+          value:
+            - edit
+            - set
+            - namespace
+            - $(params.promotion-namespace)
+      workspaces:
+        - name: source
+          workspace: shared-data
+          subPath: destination
     - name: open-pr
       taskRef:
         name: github-open-pr
@@ -126,9 +158,9 @@ spec:
         - name: BASE
           value: $(params.destination-git-revision)
         - name: TITLE
-          value: release $(params.revision)
+          value: release $(params.revision) to $(params.promotion-namespace)
         - name: BODY
-          value: release $(params.revision)
+          value: release $(params.revision) to $(params.promotion-namespace)
         - name: GITHUB_TOKEN_SECRET_NAME
           value: github-api-token
   # workspaces:
