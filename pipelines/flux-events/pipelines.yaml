@@ -100,8 +100,7 @@ spec:
       params:
         - name: args
           value:
-            - eval
-            - '.spec.chart.spec.version=env($(params.revision))'
+            - '.spec.chart.spec.version="$(params.revision)"'
             - -i
             - ./$(params.destination-git-directory)/release.yaml
       workspaces:
@@ -117,8 +116,7 @@ spec:
       params:
         - name: args
           value:
-            - eval
-            - '.metadata.namespace=env($(params.promotion-namespace))'
+            - '.metadata.namespace="$(params.promotion-namespace)"'
             - -i
             - ./$(params.destination-git-directory)/release.yaml
       workspaces:
@@ -149,7 +147,9 @@ spec:
         name: github-open-pr
         kind: ClusterTask
       runAfter:
-        - copy-files-to-destination
+        - set-chart-version
+        - set-chart-namespace
+        - update-namespace
       params:
         - name: REPO_FULL_NAME
           value: $(params.destination-git-full-name)
