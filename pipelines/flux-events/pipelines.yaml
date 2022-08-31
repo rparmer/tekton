@@ -154,7 +154,7 @@ spec:
         - name: destination-dir
           value: $(params.destination-git-directory)
         - name: destination-branch
-          value: $(params.revision)
+          value: $(params.revision)-$(params.destination-git-directory)
       workspaces:
         - name: source
           workspace: shared-data
@@ -172,7 +172,7 @@ spec:
         - name: REPO_FULL_NAME
           value: $(params.destination-git-full-name)
         - name: HEAD
-          value: $(params.revision)
+          value: $(params.revision)-$(params.destination-git-directory)
         - name: BASE
           value: $(params.destination-git-revision)
         - name: TITLE
