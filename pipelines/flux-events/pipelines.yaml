@@ -74,7 +74,8 @@ spec:
         name: yq
         kind: ClusterTask
       runAfter:
-        - copy-files-to-destination
+        - clone-source
+        - clone-destination
       params:
         - name: args
           value:
@@ -106,7 +107,8 @@ spec:
         name: kustomize
         kind: ClusterTask
       runAfter:
-        - copy-files-to-destination
+        - clone-source
+        - clone-destination
       params:
         - name: path
           value: $(params.destination-git-directory)/kustomize
