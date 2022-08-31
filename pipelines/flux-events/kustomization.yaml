@@ -6,3 +6,4 @@ resources:
 - triggers.yaml
 - pipelines.yaml
 - alerts.yaml
+- tasks.yaml
