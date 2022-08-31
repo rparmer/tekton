@@ -69,28 +69,6 @@ spec:
         - name: output
           workspace: shared-data
           subPath: destination
-    - name: copy-files-to-destination
-      taskRef:
-        name: move-files
-      runAfter:
-        - clone-source
-        - clone-destination
-      params:
-        - name: source-files
-          value: ["$(params.source-git-files[*])"]
-        - name: source-dir
-          value: $(params.source-git-directory)
-        - name: destination-dir
-          value: $(params.destination-git-directory)
-        - name: destination-branch
-          value: $(params.revision)
-      workspaces:
-        - name: source
-          workspace: shared-data
-          subPath: source
-        - name: destination
-          workspace: shared-data
-          subPath: destination
     - name: set-chart-version
       taskRef:
         name: yq
@@ -102,7 +80,7 @@ spec:
           value:
             - '.spec.chart.spec.version="$(params.revision)"'
             - -i
-            - ./$(params.destination-git-directory)/release.yaml
+            - ./$(params.source-git-directory)/helm/release.yaml
       workspaces:
         - name: source
           workspace: shared-data
@@ -118,11 +96,11 @@ spec:
           value:
             - '.metadata.namespace="$(params.promotion-namespace)"'
             - -i
-            - ./$(params.destination-git-directory)/release.yaml
+            - ./$(params.source-git-directory)/helm/release.yaml
       workspaces:
         - name: source
           workspace: shared-data
-          subPath: destination
+          subPath: source
     - name: update-namespace
       taskRef:
         name: kustomize
@@ -141,15 +119,36 @@ spec:
       workspaces:
         - name: source
           workspace: shared-data
+          subPath: source
+    - name: copy-files-to-destination
+      taskRef:
+        name: move-files
+      runAfter:
+        - set-chart-version
+        - set-chart-namespace
+        - update-namespace
+      params:
+        - name: source-files
+          value: ["$(params.source-git-files[*])"]
+        - name: source-dir
+          value: $(params.source-git-directory)
+        - name: destination-dir
+          value: $(params.destination-git-directory)
+        - name: destination-branch
+          value: $(params.revision)
+      workspaces:
+        - name: source
+          workspace: shared-data
+          subPath: source
+        - name: destination
+          workspace: shared-data
           subPath: destination
     - name: open-pr
       taskRef:
         name: github-open-pr
         kind: ClusterTask
       runAfter:
-        - set-chart-version
-        - set-chart-namespace
-        - update-namespace
+        - copy-files-to-destination
       params:
         - name: REPO_FULL_NAME
           value: $(params.destination-git-full-name)
